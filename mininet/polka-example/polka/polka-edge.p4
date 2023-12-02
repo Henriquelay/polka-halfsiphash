@@ -4,15 +4,12 @@
 
 #include "polka.p4h"
 
-/*************************************************************************
-*********************** P A R S E R  ***********************************
-*************************************************************************/
-
-parser MyParser(packet_in packet,
-                out headers hdr,
-                inout metadata meta,
-                inout standard_metadata_t standard_metadata) {
-
+parser MyParser(
+    packet_in packet,
+    out headers hdr,
+    inout metadata meta,
+    inout standard_metadata_t standard_metadata
+) {
     state start {
         transition parse_ethernet;
     }
@@ -39,23 +36,21 @@ parser MyParser(packet_in packet,
 
 }
 
-
-/*************************************************************************
-************   C H E C K S U M    V E R I F I C A T I O N   *************
-*************************************************************************/
-
-control MyVerifyChecksum(inout headers hdr, inout metadata meta) {
-    apply {  }
+control MyVerifyChecksum(
+    inout headers hdr,
+    inout metadata meta
+) {
+    apply {
+        // No checksum verification is done
+    }
 }
 
-
-/*************************************************************************
-**********************  T U N N E L   E N C A P   ************************
-*************************************************************************/
-control process_tunnel_encap(inout headers hdr,
-                            inout metadata meta,
-                            inout standard_metadata_t standard_metadata) {
-    action tdrop() {
+control TunnelEncap(
+    inout headers hdr,
+    inout metadata meta,
+    inout standard_metadata_t standard_metadata
+) {
+    action drop() {
         mark_to_drop(standard_metadata);
     }
 
@@ -96,57 +91,56 @@ control process_tunnel_encap(inout headers hdr,
 
 }
 
+control MyIngress(
+    inout headers hdr,
+    inout metadata meta,
+    inout standard_metadata_t standard_metadata
+) {
+    action tunnel_decap() {
+        // Set ethertype to IPv4 since it is leaving Polka
+        hdr.ethernet.etherType = TYPE_IPV4;
 
-/*************************************************************************
-**************  I N G R E S S   P R O C E S S I N G   *******************
-*************************************************************************/
+        // Does not serialize srcRoute
+        hdr.srcRoute.setInvalid();
 
-control MyIngress(inout headers hdr,
-                  inout metadata meta,
-                  inout standard_metadata_t standard_metadata) {
+        // Should be enough to "decap" packet
 
-    action drop() {
-        mark_to_drop(standard_metadata);
+        // In this example, port `1` is always the exit node
+        standard_metadata.egress_spec = 1;
     }
-
+    
     apply {
+        if (hdr.ethernet.etherType == TYPE_SRCROUTING) {
+            // Packet came from inside network
+            tunnel_decap();
+        } else if (hdr.ipv4.isValid()) {
+            // Packet came from outside network
+            TunnelEncap.apply(hdr, meta, standard_metadata);
+        } 
+    }
+} 
 
-    	if (hdr.ipv4.isValid() && hdr.ethernet.etherType != TYPE_SRCROUTING) {
-            process_tunnel_encap.apply(hdr, meta, standard_metadata);
-        } else if (hdr.ethernet.etherType == TYPE_SRCROUTING) {
-            hdr.ethernet.etherType = TYPE_IPV4;
-            hdr.srcRoute.setInvalid();
-            standard_metadata.egress_spec = 1;
-		}
+control MyEgress(
+    inout headers hdr,
+    inout metadata meta,
+    inout standard_metadata_t standard_metadata
+) {
+    apply {  }
+}
 
+control MyComputeChecksum(
+    inout headers hdr,
+    inout metadata meta
+) {
+    apply {
+        // No checksum is calculated
     }
 }
 
-
-
-/*************************************************************************
-****************  E G R E S S   P R O C E S S I N G   *******************
-*************************************************************************/
-
-control MyEgress(inout headers hdr,
-                 inout metadata meta,
-                 inout standard_metadata_t standard_metadata) {
-    apply {  }
-}
-
-/*************************************************************************
-*************   C H E C K S U M    C O M P U T A T I O N   **************
-*************************************************************************/
-
-control MyComputeChecksum(inout headers  hdr, inout metadata meta) {
-    apply {  }
-}
-
-/*************************************************************************
-***********************  D E P A R S E R  *******************************
-*************************************************************************/
-
-control MyDeparser(packet_out packet, in headers hdr) {
+control MyDeparser(
+    packet_out packet,
+    in headers hdr
+) {
     apply {
         packet.emit(hdr.ethernet);
         packet.emit(hdr.srcRoute);
@@ -154,15 +148,11 @@ control MyDeparser(packet_out packet, in headers hdr) {
     }
 }
 
-/*************************************************************************
-***********************  S W I T C H  *******************************
-*************************************************************************/
-
 V1Switch(
-MyParser(),
-MyVerifyChecksum(),
-MyIngress(),
-MyEgress(),
-MyComputeChecksum(),
-MyDeparser()
+    MyParser(),
+    MyVerifyChecksum(),
+    MyIngress(),
+    MyEgress(),
+    MyComputeChecksum(),
+    MyDeparser()
 ) main;
