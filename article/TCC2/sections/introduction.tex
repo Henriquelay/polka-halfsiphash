@@ -1,0 +1,16 @@
+% Probing
+\section{Introduction}
+% O que foi feito
+% Motivaçao (!!)
+% Oq é SR e Probe-Based Verification (PBV)
+
+% - motivação source routing
+% - com isso, há a proposta do polka (sistema de resíduos sem explicar o que é precisamente)
+% - mas que que há uma limitação: como comprovar que de fato a rota foi respeitada
+% - foi criada a solução do pathsec
+% ...
+% - contexto deste trabalho: a implementação e testes do pathsec no mininet
+
+Ever since \textit{Source Routing} (SR) was proposed, there has been a need to ensure that packets traverse the network along the paths selected by the source, not only for security reasons but also to ensure that the network is functioning correctly and correctly configured. This is particularly important in the context of \textit{Software-Defined Networks} (SDNs), where the control plane can select paths based on a variety of criteria.
+
+In this paper, we propose a new \pIV implementation for Probing-Based Path Verification (PBV), able to do verify the route used for a packet. This is achieved by using a composition of hash functions on stateless core switches. It can then be checked by a trusted party that knows the \nodeids independently. This work is intended to implement part of \pathsec and is available online on (\url{github.com/Henriquelay/polka-halfsiphash}).

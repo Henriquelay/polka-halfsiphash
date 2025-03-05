@@ -1,0 +1,95 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% How to use writeLaTeX: 
+%
+% You edit the source code here on the left, and the preview on the
+% right shows you the result within a few seconds.
+%
+% Bookmark this page and share the URL with your co-authors. They can
+% edit at the same time!
+%
+% You can upload figures, bibliographies, custom classes and
+% styles using the files menu.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[12pt]{article}
+
+\usepackage{sbc-template}
+
+\usepackage{graphicx,url}
+
+%\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{xspace}
+\usepackage{hyperref}  % Enables \autoref
+
+\usepackage{tikz}
+\usetikzlibrary{shapes.misc, shapes.symbols}
+
+\usepackage[inline]{enumitem}
+
+
+\usepackage{tcolorbox}
+
+\newcommand{\anotacao}[1]{%
+    \begin{tcolorbox}[colback=red!20!white,colframe=red,title=Comentário]
+        #1
+    \end{tcolorbox}
+}
+\newlist{inlinelist}{enumerate*}{1}
+\setlist[inlinelist]{label=(\roman*)}
+
+
+
+\newcommand{\pathsec}{\textbf{PathSec}\xspace}
+\newcommand{\nodeid}{\texttt{node\_id}\xspace}
+\newcommand{\nodeids}{\texttt{node\_id}s\xspace}
+\newcommand{\routeid}{\texttt{route\_id}\xspace}
+\newcommand{\routeids}{\texttt{route\_id}s\xspace}
+\newcommand{\polka}{\textit{PolKA}\xspace}
+\newcommand{\pIV}{\textit{P4}\xspace}
+
+
+\sloppy
+
+\title{Implementing and Testing a Probing-Based Path Verification for PolKA Source Routing Protocol}
+
+\author{Henrique C. Layber, Roberta L. Gomes, Magnos Martinello}
+
+
+\address{Department of Informatics\\Federal University of Espírito Santo (UFES) -- Vitória, ES -- Brazil
+  \email{henrique.layber@edu.ufes.br,\{roberta.gomes, magnos.martinello\}@ufes.br}
+}
+
+
+
+\begin{document} 
+
+\maketitle
+
+\begin{abstract}
+  Presents an implementation of a route probing and validation mechanism for the source routing protocol \polka. The mechanism is based on a composition of checksum functions on stateless core switches, which allows a trusted party to verify if a packet traversed the network along the source-defined path.
+\end{abstract}
+     
+\begin{resumo} 
+  Este trabalho apresenta uma implementação de um mecanismo de sondagem e verificação de rota para um protocolo de roteamento na origem chamado \polka. O mecanismo é baseado em uma combinação de funções de hash, calculadas  por switches de núcleo sem estado, permitindo a uma parte confiável verificar se um pacote percorreu a rede ao longo do caminho definido pela origem. 
+\end{resumo}
+
+\anotacao{Checar se keywords estão boas para o SBC. Só copiei do \pathsec}
+{\footnotesize\textbf{Keywords -- Path Aware; Network Security; Path Verification; In-networking Programming}}
+
+
+\input{sections/introduction}
+\input{sections/problem_definition}
+\input{sections/implementation}
+\input{sections/scenarios}
+\input{sections/conclusion}
+
+
+\bibliographystyle{sbc}
+\bibliography{bilbiography}
+
+\end{document}
