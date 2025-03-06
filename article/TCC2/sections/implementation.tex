@@ -52,20 +52,51 @@ Assumptions:
 }
 
 \subsection{Setup}
+% TODO: Center both groups
+\begin{figure}[ht]
+    \centering    
+    \begin{tikzpicture}[
+        outer sep=auto,
+        every node/.style={draw, rectangle, label distance=-4pt},
+        switch/.style={chamfered rectangle, fill=green!20, inner sep=1pt},
+        % every fit/.style={rectangle,draw}
+    ]
+        \node (controller) {Controller};
+        % \node[left=12pt of controller] (scapycollect) {Scapy};
+        % \draw[->] (scapycollect) to (controller);
 
-\anotacao{
-- figurinha das caixinhas (mininet, controller , sacapy)... (avaliar se o wireshark já precisa aparecer aqui ou se só la na sec. de testes/scenários
-}
+
+        \node[switch, below=32pt] at (scapycollect) (ingress) {ingress};
+        \node[switch, right=12pt] at (ingress.east) (s1) {$s1$};
+        \node[switch, right=12pt] at (s1.east)      (egress) {egress};
+        \draw[--] (ingress) to (s1);
+        \draw[--] (s1) to (egress);
+        \node[label=below:Mininet, dotted,
+            fit={(ingress) (s1) (egress)}] {};
+
+        % \draw[->] (ingress) to (scapycollect);
+        \draw[->] (ingress) -- node[fill=white, inner sep=1pt] {\footnotesize Scapy} (controller);
+
+        \node[right=12pt of controller] (tester) {Tester};
+        \draw[->] (egress) -- node[fill=white, inner sep=1pt] {\footnotesize Scapy} (tester);
+        \draw[->] (controller) to (tester);
+
+        \node[label=above:Python script, dotted,
+            fit={(controller) (tester)}] (py) {};
+    \end{tikzpicture}
+    \caption{Experimentation setup}
+    \label{setup}
+\end{figure}
 
 All implementation and experiments took place on a VM\footnote{Available on PolKA's repository \url{github.com/nerds-ufes/polka}} setup with Mininet-wifi\cite{mininet-wifi}, and were targeting Mininet's\cite{mininet} Behavioral Model version 2 (BMv2)\cite{bmv2}. Wireshark\cite{wireshark} was used to analyze packets, and Scapy\cite{scapy} was used to parse packets programmatically and automatic tests.
 
 \subsection{Implementation}
 
-By making the function $f$ a checksum function, and the unique identifier $k_{s_i}$ as the \texttt{node\_id}, we apply an input data into a chain checksum functions and verify if they match. For additional validation, we also integrate the calculated exit port into the checksum, covering some other forms of attacks or errors.
+By making the function $f$ a checksum function, and the unique identifier $k_{s_i}$ as the \nodeid, we apply an input data into a chain checksum functions and verify if they match. For additional validation, we also integrate the calculated exit port into the checksum, covering some other forms of attacks or errors.
 
 It %TODO ???
 was implemented as a version on PolKA, this means it uses the same \texttt{ethertype} \texttt{0x1234} and is interoperable with PolKA. Up-to-date PolKA headers were used (and upgraded from the forked version) to ensure compatibility. It uses the \texttt{version} header field to differentiate between regular PolKA version packets and what we call \textit{probe} packets. PolKA packets uses version \texttt{0x01}, and probe packets uses version \texttt{0xF1}. \autoref{topology:base} shows the used topology used in the experiments.
-\begin{figure}[h]
+\begin{figure}[ht]
     \newcommand{\hspacing}{0.95}
     \newcommand{\vspacing}{0.95}
     \newcommand{\nodescale}{0.8}
@@ -141,7 +172,7 @@ Every core node does checksum trying to congregate the previous \texttt{l\_hash}
 
 $$ \texttt{l\_hash} \leftarrow \text{CRC32} (\text{exit port} \oplus \texttt{l\_hash} \oplus \texttt{node\_id}) $$
 
-The CRC32 checksum function used currently is the one available by BMv2 standard library, and is experimentally found to be ISO HDLC\footnote{\url{reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-iso-hdlc}}.
+The CRC32 checksum function used currently is the one available by BMv2 standard library, and is experimentally found to be ISO HDLC\footnote{\url{reveng.sourceforge.io/crc-catalogue/all.htm\#crc.cat.crc-32-iso-hdlc}}.
 
 \subsubsection{Decapsulation}
 
