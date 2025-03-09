@@ -29,10 +29,9 @@
   }
 }
 
-\section{Implementing and Testing a Probing-Based Path Verification}
+\section{Implementing and Testing a Probing-Based Path Verification (PBV)}
 
-
-Assumptions:
+PBV consists of sending special packets (probes) with path-verification capabilities. The path verification system used is described in Section \ref{sec:multisigmodel}. Some assumptions are made:
 \begin{inlinelist}
     \item Each node is assumed to be secure, that is, no node will alter the packet in any way that is not expected. This is a common assumption in SDN networks, where a trusted party is the only entity that can alter the network state;
     \item  Every link is assumed to be perfect, that is, no packet loss, no packet corruption, and no packet duplication;
@@ -42,7 +41,7 @@ Assumptions:
 \end{inlinelist}
 
 
-\anotacao{
+\mycommentbox{
 - explicação/motivação do uso do mininet , falando um pouco sobre p4 e bmv2
 (ñn mencionar o wireshark aqui... pode mencionar na sec. de testes... como uma tool complementar)
 
@@ -88,11 +87,11 @@ Assumptions:
     \label{setup}
 \end{figure}
 
-All implementation and experiments took place on a VM\footnote{Available on PolKA's repository \url{github.com/nerds-ufes/polka}} setup with Mininet-wifi\cite{mininet-wifi}, and were targeting Mininet's\cite{mininet} Behavioral Model version 2 (BMv2)\cite{bmv2}. Wireshark\cite{wireshark} was used to analyze packets, and Scapy\cite{scapy} was used to parse packets programmatically and automatic tests.
+All experiments took place in a VM setup with Mininet-wifi\cite{mininet-wifi}\footnote{Available on Mininet-wifi's repository \url{github.com/intrig-unicamp/mininet-wifi}} and were targeting Mininet's\cite{mininet} Behavioral Model version 2\footnote{\url{github.com/p4lang/behavioral-model}}(\bmv). Scapy\cite{scapy} was used to parse packets programmatically. All data plane code was written in \pIV\cite{p4}. Mininet-wifi was used instead of Mininet due to its libraries for deploying \pIV \bmv switches.
 
 \subsection{Implementation}
 
-By making the function $f$ a checksum function, and the unique identifier $k_{s_i}$ as the \nodeid, we apply an input data into a chain checksum functions and verify if they match. For additional validation, we also integrate the calculated exit port into the checksum, covering some other forms of attacks or errors.
+\mycomment{Rephrase} By making the function $f$ a hash function, and the unique identifier $k_{s_i}$ as a composition including the \nodeid, we apply an input data (only external variable, seed) into a chain hash functions and verify if they match. For additional validation, we also integrate the calculated exit port into the checksum, covering some other forms of attacks or errors.
 
 It %TODO ???
 was implemented as a version on PolKA, this means it uses the same \texttt{ethertype} \texttt{0x1234} and is interoperable with PolKA. Up-to-date PolKA headers were used (and upgraded from the forked version) to ensure compatibility. It uses the \texttt{version} header field to differentiate between regular PolKA version packets and what we call \textit{probe} packets. PolKA packets uses version \texttt{0x01}, and probe packets uses version \texttt{0xF1}. \autoref{topology:base} shows the used topology used in the experiments.
@@ -143,7 +142,7 @@ It reads as follows: $s_1$ is linked to $s_2$'s port $2$ using port $2$, $s_2$ i
 
 % Figura com etapas e descrição corrida
 \subsubsection{Parsing}
-\anotacao{FIGURA desses subsub, ilustrando esse "pipeline", explicar em tópicos}
+\mycommentbox{FIGURA desses subsub, ilustrando esse "pipeline", explicar em tópicos}
 
 Parsing is done in edge nodes as follows:
 \begin{itemize}
@@ -172,7 +171,7 @@ Every core node does checksum trying to congregate the previous \texttt{l\_hash}
 
 $$ \texttt{l\_hash} \leftarrow \text{CRC32} (\text{exit port} \oplus \texttt{l\_hash} \oplus \texttt{node\_id}) $$
 
-The CRC32 checksum function used currently is the one available by BMv2 standard library, and is experimentally found to be ISO HDLC\footnote{\url{reveng.sourceforge.io/crc-catalogue/all.htm\#crc.cat.crc-32-iso-hdlc}}.
+The CRC32 checksum function used currently is the one available by \bmv standard library, and is experimentally found to be ISO HDLC\footnote{\url{reveng.sourceforge.io/crc-catalogue/all.htm\#crc.cat.crc-32-iso-hdlc}}.
 
 \subsubsection{Decapsulation}
 
@@ -186,7 +185,7 @@ The implementation for a node doing an individual checksum calculation step can 
 
 A simple example of a packet traversing a network with 10 core switches is shown in the figure below. Exit port is calculated by PolKA. In the examples, we are measuring $P_{e_1 \rightarrow e_{10}} = (e_1, s_1, s_2, s_3, s_4, s_5, s_6, s_7, s_8, s_9, s_{10}, s_{11}, e_{10})$
 
-\colorbox{red}{FIGURA}
+\mycommentbox{FIGURA}
 % #let inttohexstr(a) = "0x" + str(a, base: 16)
 % #let calc_crc32(a, b, c) = $"CRC32"(#raw(inttohexstr(a)) xor #raw(inttohexstr(b)) xor #raw(inttohexstr(c)))$
 % #figure(

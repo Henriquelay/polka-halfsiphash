@@ -26,7 +26,7 @@ More formally, given a sequence of nodes $P_{i \rightarrow e}$, and a captured s
 Notably, it does not require validation, that is, it needs only to respond if $P_{i \rightarrow e} = P_j$ and does not need to know any of their contents or check their validity as a route.
 
 
-\subsection{Multi-signature model for Path Verification}
+\subsection{Multi-signature model for Path Verification} \label{sec:multisigmodel}
 %cite pathsec
 
 To balance trace effectiveness and scalability, \pathsec proposes using packets themselves as probes\cite{pathsec}\cite{PINT2020}, with a lightweight multi-signature, keeping the header size fixed. That is, each core node hashes the previous' node signature with a key only itself (and the Controller) can possess, and pass it forward, and all following core nodes will do the same until the edge node is reached.

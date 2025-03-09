@@ -34,11 +34,15 @@
 
 \usepackage{tcolorbox}
 
-\newcommand{\anotacao}[1]{%
-    \begin{tcolorbox}[colback=red!20!white,colframe=red,title=Comentário]
+\newcommand{\mycommentbox}[1]{%
+    \begin{tcolorbox}[colback=red!20!white,colframe=red,title=Comment]
         #1
     \end{tcolorbox}
 }
+\newcommand{\mycomment}[1]{%
+	\colorbox{red}{#1}
+}
+
 \newlist{inlinelist}{enumerate*}{1}
 \setlist[inlinelist]{label=(\roman*)}
 
@@ -51,6 +55,7 @@
 \newcommand{\routeids}{\texttt{route\_id}s\xspace}
 \newcommand{\polka}{\textit{PolKA}\xspace}
 \newcommand{\pIV}{\textit{P4}\xspace}
+\newcommand{\bmv}{\textit{BMv2}\xspace}
 
 
 \sloppy

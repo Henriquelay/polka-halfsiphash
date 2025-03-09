@@ -1,9 +1,11 @@
 
 \section{Adversity scenarios}
 
+\mycommentbox{
 - explica no 1o paragraf. que nesta sec. vc vai apresentar os testes representando diferente cenenários de falha/ataque
 
 - CRIAR UMA FIGURONA, colocando as 4 fig juntas (faz um sub tit de fig (a), (b), etc)
+}
 
 The solution has been tested against some adversarial scenarios, and checked against the same initial seed but under the base topology as described on \ref{topology:base}.
 
@@ -14,7 +16,7 @@ The solution has been tested against some adversarial scenarios, and checked aga
 
 An attacker PolKA switch $s_{555}$ was added between $s_5$ and $s_6$, as shown in \ref{topology:addition}. The packet was sent from $e_1$ to $e_{10}$. Suppose the attacking switch is properly connected in the ports that PolKA uses for this route, the packet is properly routed with PolKA. The checksums will not match when validating the path past the attacker. The packet trace is shown in \ref{example:addition}. Note the error propagating nature of composing checksums.
 
-\colorbox{red}{FIGURA}
+\mycommentbox{FIGURA}
 % #figure(
 %   caption: [Topology setup for addition scenario.],
 %   diagram(
@@ -133,7 +135,7 @@ An attacker PolKA switch $s_{555}$ was added between $s_5$ and $s_6$, as shown i
 
 An attacker tries to make a detour in the network, as shown in \ref{topology:detour}. The packet was sent from $e_1$ to $e_{10}$, and passed through the detour, as shown in \ref{example:detour}. The checksum will fail to validate when checking in the futures, as the function composition $f_{s_{555}} (x) = f_{s_6} (x)$. Note that this is only true when $k_{s_{555}} \neq k_{s_6}$. As stated, the key must be unique per node, and so must be kept secret.
 
-\colorbox{red}{FIGURA}
+\mycommentbox{FIGURA}
 % #figure(
 %   caption: [Topology setup for detour scenario.],
 %   diagram(
@@ -248,7 +250,7 @@ An attacker tries to make a detour in the network, as shown in \ref{topology:det
 
 Misconfigured links can cause packets to skip nodes, as shown in \ref{topology:skipping}. The packet was sent from $e_1$ to $e_{10}$, and passed through the skipping, as shown in \ref{example:skipping}. The checksum will not match when validating the path in the future, as the packet did not pass through the expected nodes.
 
-\colorbox{red}{FIGURA}
+\mycommentbox{FIGURA}
 % #figure(
 %   caption: [Topology setup for skipping scenario.],
 %   diagram(
