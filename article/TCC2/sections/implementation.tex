@@ -7,16 +7,16 @@
   },
   edge/.style={
     scale=\nodescale,
-    inner sep=3pt,
+    inner sep=1pt,
     draw,
-    rounded rectangle,
+    rectangle,
     fill=blue!20,
   },
   core/.style={
     scale=\nodescale,
     inner sep=1pt,
     draw,
-    chamfered rectangle,
+    rectangle,
     fill=green!30,
   },
   port/.style = {
@@ -31,7 +31,7 @@
 
 \section{Implementing and Testing a Probing-Based Path Verification (PBV)}
 
-PBV consists of sending special packets (probes) with path-verification capabilities. The path verification system used is described in Section \ref{sec:multisigmodel}. Some assumptions are made:
+PBV consists of sending special packets (probes) with path-verification capabilities. The path verification system used is described \autoref{sec:multisigmodel}. Some assumptions are made:
 \begin{inlinelist}
     \item Each node is assumed to be secure, that is, no node will alter the packet in any way that is not expected. This is a common assumption in SDN networks, where a trusted party is the only entity that can alter the network state;
     \item  Every link is assumed to be perfect, that is, no packet loss, no packet corruption, and no packet duplication;
@@ -51,7 +51,12 @@ PBV consists of sending special packets (probes) with path-verification capabili
 }
 
 \subsection{Setup}
-% TODO: Center both groups
+
+\pIV is a language used to program the data plane of network devices\cite{p4}. Behavioral Model 2 (\bmv) is a software switch that supports the \pIV language \cite{bmv2}. Mininet is a network emulation tool that allows the creation of virtual networks with a controlled environment\cite{mininet}. Mininet-wifi\footnote{\url{github.com/intrig-unicamp/mininet-wifi}} is a Mininet fork used in this work due to its compatibility with \bmv. Despite the name, no Wi-Fi emulating feature was used.
+
+% Explain why using Scapy
+Scapy is a Python library that allows the creation and manipulation of packets\cite{scapy}. It is used to parse packets in the experiments and automate tests. The setup is shown in \autoref{setup}. Controller is responsible for the network state and reference signature calculation, and the Tester triggering Mininet hosts to send packets, setup Scapy for parsing them and then asserting their signatures to Controller-calculated references.
+
 \begin{figure}[ht]
     \centering    
     \begin{tikzpicture}[
@@ -61,76 +66,92 @@ PBV consists of sending special packets (probes) with path-verification capabili
         % every fit/.style={rectangle,draw}
     ]
         \node (controller) {Controller};
-        % \node[left=12pt of controller] (scapycollect) {Scapy};
-        % \draw[->] (scapycollect) to (controller);
+        \node[right=12pt of controller] (tester) {Tester};
+        \draw[->] (controller) to (tester);
+        \node[label=above:Python script, dotted,
+          fit={(controller) (tester)}] (py) {};
 
-
-        \node[switch, below=32pt] at (scapycollect) (ingress) {ingress};
-        \node[switch, right=12pt] at (ingress.east) (s1) {$s1$};
+        \node[switch, below=32pt] at (py) (s1) {cores};
+        \node[switch, left=12pt] at (s1.west) (ingress) {ingress};
         \node[switch, right=12pt] at (s1.east)      (egress) {egress};
         \draw[--] (ingress) to (s1);
         \draw[--] (s1) to (egress);
         \node[label=below:Mininet, dotted,
             fit={(ingress) (s1) (egress)}] {};
 
-        % \draw[->] (ingress) to (scapycollect);
         \draw[->] (ingress) -- node[fill=white, inner sep=1pt] {\footnotesize Scapy} (controller);
-
-        \node[right=12pt of controller] (tester) {Tester};
-        \draw[->] (egress) -- node[fill=white, inner sep=1pt] {\footnotesize Scapy} (tester);
-        \draw[->] (controller) to (tester);
-
-        \node[label=above:Python script, dotted,
-            fit={(controller) (tester)}] (py) {};
+        \draw[->] (egress) -- node[fill=white, inner sep=1pt] {\footnotesize Scapy} (tester) ;
     \end{tikzpicture}
     \caption{Experimentation setup}
     \label{setup}
 \end{figure}
 
-All experiments took place in a VM setup with Mininet-wifi\cite{mininet-wifi}\footnote{Available on Mininet-wifi's repository \url{github.com/intrig-unicamp/mininet-wifi}} and were targeting Mininet's\cite{mininet} Behavioral Model version 2\footnote{\url{github.com/p4lang/behavioral-model}}(\bmv). Scapy\cite{scapy} was used to parse packets programmatically. All data plane code was written in \pIV\cite{p4}. Mininet-wifi was used instead of Mininet due to its libraries for deploying \pIV \bmv switches.
 
 \subsection{Implementation}
 
-\mycomment{Rephrase} By making the function $f$ a hash function, and the unique identifier $k_{s_i}$ as a composition including the \nodeid, we apply an input data (only external variable, seed) into a chain hash functions and verify if they match. For additional validation, we also integrate the calculated exit port into the checksum, covering some other forms of attacks or errors.
+We define the header fields \timestamp and \lhash to indicate the uniquely-generated number and the current digest, respectively. Due to header incompatibility, probe packets operate using a different version number in the \texttt{version} field, so it is interoperable with \polka by switching between probes and regular packets using the \texttt{version} header. \polka packets use version \texttt{0x01}\cite{polkap4}, and probe packets use version \texttt{0xF1}. \autoref{topology:base} shows the used topology used in the experiments.
 
-It %TODO ???
-was implemented as a version on PolKA, this means it uses the same \texttt{ethertype} \texttt{0x1234} and is interoperable with PolKA. Up-to-date PolKA headers were used (and upgraded from the forked version) to ensure compatibility. It uses the \texttt{version} header field to differentiate between regular PolKA version packets and what we call \textit{probe} packets. PolKA packets uses version \texttt{0x01}, and probe packets uses version \texttt{0xF1}. \autoref{topology:base} shows the used topology used in the experiments.
 \begin{figure}[ht]
-    \newcommand{\hspacing}{0.95}
-    \newcommand{\vspacing}{0.95}
+    \centering    
+    % with ports
+    % \newcommand{\hspacing}{0.95}
+    % \newcommand{\vspacing}{0.95}
+    % \newcommand{\nodescale}{0.8}
+    % \newcommand{\nswitches}{10}
+    % \begin{tikzpicture}[outer sep=auto]
+    %     \foreach \x in {1, ..., \nswitches} {
+    %         \node[host] (H\x) at (\x*\hspacing, 0*\vspacing) {$h\x$};
+    %         \node[edge] (E\x) at (\x*\hspacing, 0.95*\vspacing) {$e\x$};
+    %         \node[core] (S\x) at (\x*\hspacing, 2*\vspacing) {$s\x$};
+
+    %         \draw (H\x) to
+    %             node[pos=0.1, port, signal to=north]{1}
+    %             node[pos=0.9, port, signal to=south]{1}
+    %             (E\x);
+    %         \draw (E\x) to
+    %             node[pos=0.1, port, signal to=north]{2}
+    %             node[pos=0.9, port, signal to=south]{1}
+    %             (S\x);
+    %     };
+    %     \node[host] (H11) at (0*\hspacing, 0*\vspacing) {$h11$};
+    %     \draw (H11) to
+    %         node[pos=0.1, port, signal to=north]{1}
+    %         node[pos=0.9, port, signal to=south]{3}
+    %         (E1);
+        
+    %     \draw (S1) to
+    %         node[pos=-0.1, port, signal to=right]{2}
+    %         node[pos=1.1, port, signal to=left]{2}
+    %         (S2);
+    %     \foreach \x in {2, ...,  \number\numexpr\nswitches-1\relax } {
+    %         \draw (S\x) to
+    %             node[pos=-0.1, port, signal to=right]{3}
+    %             node[pos=1.1, port, signal to=left]{2}
+    %             (S\number\numexpr\x+ 1\relax);
+    %     };
+            
+    % \end{tikzpicture}
+
+    % Without ports
     \newcommand{\nodescale}{0.8}
     \newcommand{\nswitches}{10}
-    \centering    
+    \newcounter{previtem}
+    \setcounter{previtem}{11}
     \begin{tikzpicture}[outer sep=auto]
+        \node[host] (H11) {$h11$};
         \foreach \x in {1, ..., \nswitches} {
-            \node[host] (H\x) at (\x*\hspacing, 0*\vspacing) {$h\x$};
-            \node[edge] (E\x) at (\x*\hspacing, 0.95*\vspacing) {$e\x$};
-            \node[core] (S\x) at (\x*\hspacing, 2*\vspacing) {$s\x$};
+            \node[host, right=2pt] at (H\arabic{previtem}.east) (H\x) {$h\x$};
+            \node[edge, above=4pt] (E\x) at (H\x.north) {$e\x$};
+            \node[core, above=4pt] (S\x) at (E\x.north) {$s\x$};
 
-            \draw (H\x) to
-                node[pos=0.1, port, signal to=north]{1}
-                node[pos=0.9, port, signal to=south]{1}
-                (E\x);
-            \draw (E\x) to
-                node[pos=0.1, port, signal to=north]{2}
-                node[pos=0.9, port, signal to=south]{1}
-                (S\x);
+            \draw (H\x) to (E\x);
+            \draw (E\x) to (S\x);
+            \setcounter{previtem}{\x}
         };
-        \node[host] (H11) at (0*\hspacing, 0*\vspacing) {$h11$};
-        \draw (H11) to
-            node[pos=0.1, port, signal to=north]{1}
-            node[pos=0.9, port, signal to=south]{3}
-            (E1);
-        
-        \draw (S1) to
-            node[pos=-0.1, port, signal to=right]{2}
-            node[pos=1.1, port, signal to=left]{2}
-            (S2);
-        \foreach \x in {2, ...,  \number\numexpr\nswitches-1\relax } {
-            \draw (S\x) to
-                node[pos=-0.1, port, signal to=right]{3}
-                node[pos=1.1, port, signal to=left]{2}
-                (S\number\numexpr\x+ 1\relax);
+        \draw (H11) to (E1);
+        \draw (S1) to (S2);
+        \foreach \x in {2, ..., \number\numexpr\nswitches-1\relax} {
+            \draw (S\x) to (S\number\numexpr\x+ 1\relax);
         };
             
     \end{tikzpicture}

@@ -1,7 +1,7 @@
 
 \section{Conclusion and Future Work}
 
-The plan, as per the repository name implies, is to implement a non-reversible hash function, SipHash, more specifically, HalfSipHash\cite{siphash}, to be used instead of the CRC32. This would make the system more secure, since CRC32 is a well-known as a checksum function that can be easily reversed\cite{reversingCRC}. Also, a proper data compression method for adding (\colorbox{red}{better term needed?}) exit port and \texttt{node\_id} into the checksum field is needed, since the current method is not optimal due to data loss from collision.
+The plan, as per the repository name implies, is to implement a non-reversible hash function, SipHash, more specifically, HalfSipHash\cite{siphash}, to be used instead of the CRC32. This would make the system more secure, since CRC32 is a well-known as a checksum function that can be easily reversed\cite{reversingCRC}. Also, a proper data compression method for adding \mycomment{better term needed?} exit port and \texttt{node\_id} into the checksum field is needed, since the current method is not optimal due to data loss from collision.
 
 In the future, it should be integrated into PathSec\cite{pathsec}, and to do so the ingress edge needs to report the generated \texttt{key}, and the egress edge will report the final checksum directly to a blockchain, for auditability and accessibility. Having it directly report to a blockchain instead of a third party circumvents trust issues.
 
