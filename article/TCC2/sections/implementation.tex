@@ -28,6 +28,7 @@
     fill=white,
   }
 }
+\newcounter{previtem}
 
 \section{Implementing and Testing a Probing-Based Path Verification (PBV)}
 
@@ -39,25 +40,25 @@ PBV consists of sending special packets (probes) with path-verification capabili
     \item All paths are assumed to be valid and all information correct unless stated otherwise;
     \item Hash collisions will not happen.
 \end{inlinelist}
-
-
-\mycommentbox{
-- explicação/motivação do uso do mininet , falando um pouco sobre p4 e bmv2
-(ñn mencionar o wireshark aqui... pode mencionar na sec. de testes... como uma tool complementar)
-
-- o mininet é inerentemetne isolado... mas o pathsec necessita de uma infraestrutura externa (blockchain).... motivação para usar o scapy
-
-.... nas subseções a seguir são detalhados o setup do ambiente e a implementação
-}
+Furthermore, this implementation is a proof-of-concept\mycomment{está certo chamar de proof-of-concept?}, and there is little concerns about performance and protocol implementation: only IPv4 is supported. The following subsections detail the setup and implementation.
 
 \subsection{Setup}
 
-\pIV is a language used to program the data plane of network devices\cite{p4}. Behavioral Model 2 (\bmv) is a software switch that supports the \pIV language \cite{bmv2}. Mininet is a network emulation tool that allows the creation of virtual networks with a controlled environment\cite{mininet}. Mininet-wifi\footnote{\url{github.com/intrig-unicamp/mininet-wifi}} is a Mininet fork used in this work due to its compatibility with \bmv. Despite the name, no Wi-Fi emulating feature was used.
+\pIV is a language used to program the data plane of network devices\cite{p4}. Behavioral Model 2 (\bmv) is a software switch that supports the \pIV language \cite{bmv2}\mycomment{descobrir pq o `2` não renderiza no cite}. Mininet is a network emulation tool that allows the creation of virtual networks with a controlled environment\cite{mininet}. Mininet-wifi\footnote{\url{github.com/intrig-unicamp/mininet-wifi}} is a Mininet fork used in this work due to its compatibility with \bmv. Despite the name, no Wi-Fi emulating feature was used.
 
 % Explain why using Scapy
 Scapy is a Python library that allows the creation and manipulation of packets\cite{scapy}. It is used to parse packets in the experiments and automate tests. The setup is shown in \autoref{setup}. Controller is responsible for the network state and reference signature calculation, and the Tester triggering Mininet hosts to send packets, setup Scapy for parsing them and then asserting their signatures to Controller-calculated references.
 
+
+
+\subsection{Implementation}
+
+We define the header fields \timestamp and \lhash to indicate the uniquely-generated number and the current digest, respectively. Due to header incompatibility, probe packets operate using a different version number in the \texttt{version} field, so it is interoperable with \polka by switching between probes and regular packets using the \texttt{version} header. \polka packets use version \texttt{0x01}, and probe packets use version \texttt{0xF1}. \autoref{topology:base} shows the used topology used in the experiments.
+% It reads as follows: $s_1$ is linked to $s_2$'s port $2$ using port $2$, $s_2$ is linked to $e_2$'s port $2$ using port $1$, and so on.
+
 \begin{figure}[ht]
+    \centering    
+    \begin{minipage}{0.49\linewidth}
     \centering    
     \begin{tikzpicture}[
         outer sep=auto,
@@ -74,8 +75,8 @@ Scapy is a Python library that allows the creation and manipulation of packets\c
         \node[switch, below=32pt] at (py) (s1) {cores};
         \node[switch, left=12pt] at (s1.west) (ingress) {ingress};
         \node[switch, right=12pt] at (s1.east)      (egress) {egress};
-        \draw[--] (ingress) to (s1);
-        \draw[--] (s1) to (egress);
+        \draw (ingress) to (s1);
+        \draw (s1) to (egress);
         \node[label=below:Mininet, dotted,
             fit={(ingress) (s1) (egress)}] {};
 
@@ -84,15 +85,11 @@ Scapy is a Python library that allows the creation and manipulation of packets\c
     \end{tikzpicture}
     \caption{Experimentation setup}
     \label{setup}
-\end{figure}
-
-
-\subsection{Implementation}
-
-We define the header fields \timestamp and \lhash to indicate the uniquely-generated number and the current digest, respectively. Due to header incompatibility, probe packets operate using a different version number in the \texttt{version} field, so it is interoperable with \polka by switching between probes and regular packets using the \texttt{version} header. \polka packets use version \texttt{0x01}\cite{polkap4}, and probe packets use version \texttt{0xF1}. \autoref{topology:base} shows the used topology used in the experiments.
-
-\begin{figure}[ht]
+    \end{minipage}
+    \begin{minipage}{0.49\linewidth}
     \centering    
+    \newcommand{\nodescale}{0.8}
+    \newcommand{\nswitches}{10}
     % with ports
     % \newcommand{\hspacing}{0.95}
     % \newcommand{\vspacing}{0.95}
@@ -133,9 +130,6 @@ We define the header fields \timestamp and \lhash to indicate the uniquely-gener
     % \end{tikzpicture}
 
     % Without ports
-    \newcommand{\nodescale}{0.8}
-    \newcommand{\nswitches}{10}
-    \newcounter{previtem}
     \setcounter{previtem}{11}
     \begin{tikzpicture}[outer sep=auto]
         \node[host] (H11) {$h11$};
@@ -144,108 +138,74 @@ We define the header fields \timestamp and \lhash to indicate the uniquely-gener
             \node[edge, above=4pt] (E\x) at (H\x.north) {$e\x$};
             \node[core, above=4pt] (S\x) at (E\x.north) {$s\x$};
 
-            \draw (H\x) to (E\x);
-            \draw (E\x) to (S\x);
+            \draw (H\x) -- (E\x) -- (S\x);
             \setcounter{previtem}{\x}
         };
         \draw (H11) to (E1);
-        \draw (S1) to (S2);
-        \foreach \x in {2, ..., \number\numexpr\nswitches-1\relax} {
-            \draw (S\x) to (S\number\numexpr\x+ 1\relax);
+
+        \foreach \x [count=\s from 2] in {1, ..., \number\numexpr\nswitches-1\relax} {
+            \draw (S\x) to (S\s);
         };
             
     \end{tikzpicture}
-    \caption{Baseline topology used in experimentation.$h_i$ are hosts, $e_i$ are edge nodes, $s_i$ are core nodes}
+    \caption{Baseline topology used in experimentation}
     \label{topology:base}
+    \end{minipage}
+% \end{figure}
+% Joins both figures into one
+% \begin{figure}[ht]
+%     \centering
+    \tikzset{
+        outer sep=auto,
+        every node/.style={draw, chamfered rectangle, label distance=-4pt, inner sep=2pt},
+    }
+    \begin{minipage}{0.49\linewidth}
+    \centering    
+    \begin{tikzpicture}
+        \node (parse) {Parse};
+            
+        \node[above right=12pt] (encap) at (parse.east) {Encapsulation};
+        \node[right=12pt] (core) at (encap.east) {SDN core};
+        \draw[->, very thick] (parse.east) -- (encap);
+        \draw[->, very thick] (encap) -- (core);
+
+        
+        \node[below right=12pt] (decap) at (parse.east) {Decapsulation};
+        \node[right=12pt] (out) at (decap.east) {external net};
+        \draw[->, very thick] (parse.east) -- (decap);
+        \draw[->, very thick] (decap) -- (out);
+            
+    \end{tikzpicture}
+    \caption{Edge ingress/egress logic}
+    \label{fig:pipeline-edge}
+    \end{minipage}
+    \begin{minipage}{0.49\linewidth}
+    \centering    
+    \begin{tikzpicture}
+        \node (parse) {Parse};
+        \node[right=12pt] (nhop) at (parse.east) {nHop};
+        \node[right=12pt] (sign) at (nhop.east) {Sign};
+        \node[right=12pt] (deparse) at (sign.east) {Deparse};
+
+        \draw[->, very thick] (parse) -- (nhop);
+        \draw[->, very thick] (nhop) -- (sign);
+        \draw[->, very thick] (nhop.east) ..controls ++(0,-1) and ++(0,-0.5) .. (deparse.195);
+        \draw[->, very thick] (sign) -- (deparse);
+            
+    \end{tikzpicture}
+    \caption{Data plane steps \mycomment{Muito simples?}}
+    \label{fig:pipeline-core}
+    \end{minipage}
 \end{figure}
 
-It reads as follows: $s_1$ is linked to $s_2$'s port $2$ using port $2$, $s_2$ is linked to $e_2$'s port $2$ using port $1$, and so on.
+On edge nodes, if an IPv4 protocol \texttt{ethertype} field is detected (\texttt{0x0800}), it must be a packet from outside the network, so the edge is doing an ingress and \polka headers need to be added. Let this process be called \textit{encapsulation}; If a \polka protocol \texttt{ethertype} field is detected (\texttt{0x1234}), it must be a packet from the network core, so the edge is doing an egress and the original IPv4 packet must be unwrapped. Let this process be called \textit{decapsulation}.
 
-% Figura com etapas e descrição corrida
-\subsubsection{Parsing}
-\mycommentbox{FIGURA desses subsub, ilustrando esse "pipeline", explicar em tópicos}
+\polka headers consists of the route polynomial (\routeid), along with \texttt{version}, \texttt{ttl} and \texttt{proto} (stores the original \texttt{ethertype}). \routeid and hop calculation is out of the scope of this paper.
+During encapsulation, the packet can be made into a probe packet by setting the \texttt{version} header field to \texttt{0xF1} and further defining the 32-bit fields \timestamp to any unique value and \lhash to \timestamp.
 
-Parsing is done in edge nodes as follows:
-\begin{itemize}
-    \item If an IPv4 protocol \texttt{ethertype} field is detected (\texttt{0x0800}), it must be a packet from outside the network, it must be wrapped and routed by the same edge node that parsed it. Let call this process be called \textit{encapsulation};
-    \item If a PolKA protocol \texttt{ethertype} field is detected (\texttt{0x1234}), it must be a packet from inside the network, since the protocol boundary is IPv4, the original IPv4 packet must be unwrapped. Let this process be called \textit{decapsulation}.
-\end{itemize}
+On the core network, the hash function used is \textit{SipHash-2-4-32} (\siphash), which after calculating the next hop (\nhop) and if the packet is a probe packet \lhash is computed as
+$$
+\lhash \leftarrow \textit{SipHash2-4-32}(\nodeid || \nhop || \timestamp || 0000000_2, \lhash)
+$$
+Meaning that a 64-bitstring made of concatenating \nodeid, \nhop, \timestamp and 7 bit wide zero is used as key for the \siphash function hashing \lhash. Inputting \nhop into the hash function protects us from some scenarios. \mycomment{explicar mais}
 
-On core nodes, the packet is only parsed as PolKA packets, but it can be either a regular PolKA packet version or a probe packet version. If a probe packet version is detected, the probe packet header is parsed as well, otherwise the packet is treated a regular PolKA packet and no probing is done.
-
-The implementation for parsing on edge nodes can be found in \ref{app:edge_parser}, and for core nodes in \ref{app:core_parser}.
-
-\subsubsection{Encapsulation} \label{sec:encapsulation}
-
-PolKA headers consists of the route polynomial (\texttt{routeid}), along with \texttt{version}, \texttt{ttl} and \texttt{proto} (stores the original \texttt{ethertype}). \texttt{route\_id} calculation is out of the scope of this paper.
-
-A new header is added for probe packets, containing a $32$ bit \texttt{key} and $32$ bit \texttt{l\_hash}.
-
-During encapsulation of a probe packet, a random number is generated, and is used as \texttt{key}, for reproducibility and a seed for our composition. Edge nodes does not execute checksum functions and only repeats the key into the checksum field \texttt{l\_hash}, so \texttt{node\_id} for encapsulation is not required.
-
-After encapsulation, the packet is sent to the next hop.
-
-The implementation for encapsulation and related headers can be found in \ref{app:encapsulation}.
-
-\subsubsection{Composition}
-Every core node does checksum trying to congregate the previous \texttt{l\_hash}, the calculated next hop port, and its own \texttt{node\_id} into the $32$ bit field. Currently, it is implemented as such:
-
-$$ \texttt{l\_hash} \leftarrow \text{CRC32} (\text{exit port} \oplus \texttt{l\_hash} \oplus \texttt{node\_id}) $$
-
-The CRC32 checksum function used currently is the one available by \bmv standard library, and is experimentally found to be ISO HDLC\footnote{\url{reveng.sourceforge.io/crc-catalogue/all.htm\#crc.cat.crc-32-iso-hdlc}}.
-
-\subsubsection{Decapsulation}
-
-At the egress node, Polka headers are dropped, and the packet becomes an identical packet to what the ingress node received. The probe packet header is also dropped. The packet is then sent to the host. No checksum is calculated, so \texttt{node\_id} is not required. Thus, together with \ref{sec:encapsulation}, the \texttt{node\_id} is not used for validation on edge nodes.
-
-The implementation for decapsulation can be found in \ref{app:decapsulation}.
-
-The algorithm was verified externally through another program simulating all the composition steps, with source available\footnote{\url{github.com/Henriquelay/polka_probe_checker}}, making use of the `crc` library crate\footnote{\url{github.com/mrhooray/crc-rs}}, and checked with gathered data.
-
-The implementation for a node doing an individual checksum calculation step can be found in \ref{app:calculation}.
-
-A simple example of a packet traversing a network with 10 core switches is shown in the figure below. Exit port is calculated by PolKA. In the examples, we are measuring $P_{e_1 \rightarrow e_{10}} = (e_1, s_1, s_2, s_3, s_4, s_5, s_6, s_7, s_8, s_9, s_{10}, s_{11}, e_{10})$
-
-\mycommentbox{FIGURA}
-% #let inttohexstr(a) = "0x" + str(a, base: 16)
-% #let calc_crc32(a, b, c) = $"CRC32"(#raw(inttohexstr(a)) xor #raw(inttohexstr(b)) xor #raw(inttohexstr(c)))$
-% #figure(
-%   caption: [Packet trace while traversing $limits(P)_(e_1->e_10)$.],
-%   table(
-%       columns: 5,
-%       table.header(
-%         [Node],
-%         [`node_id`],
-%         [`exit_port`],
-%         [Calculation],
-%         [`l_hash`],
-%       ),
-
-%       /*
-%       *** Comparing 0x61e8d6e7, expects 0x61e8d6e7 on node 0x00ff ok ✅
-%       *** Comparing 0xae91434c, expects 0xae91434c on node 0x002b ok ✅
-%       *** Comparing 0x08c97f5f, expects 0x08c97f5f on node 0x002d ok ✅
-%       *** Comparing 0xeff1aad2, expects 0xeff1aad2 on node 0x0039 ok ✅
-%       *** Comparing 0x08040c89, expects 0x08040c89 on node 0x003f ok ✅
-%       *** Comparing 0xaa99ae2e, expects 0xaa99ae2e on node 0x0047 ok ✅
-%       *** Comparing 0x7669685e, expects 0x7669685e on node 0x0053 ok ✅
-%       *** Comparing 0x03e1e388, expects 0x03e1e388 on node 0x008d ok ✅
-%       *** Comparing 0x2138ffd3, expects 0x2138ffd3 on node 0x00bd ok ✅
-%       *** Comparing 0x1ef2cbbe, expects 0x1ef2cbbe on node 0x00d7 ok ✅
-%       *** Comparing 0x99c5fe05, expects 0x99c5fe05 on node 0x00f5 ok ✅
-%       */
-
-%       $e_1$,  ""       , `1` , [Generation]                      , `0x61e8d6e7`,
-%       $s_1$,  `0x002b` , `1` , calc_crc32(0x61e8d6e7, 1, 0x002b) , `0xae91434c`,
-%       $s_2$,  `0x002d` , `2` , calc_crc32(0xae91434c, 2, 0x002d) , `0x08c97f5f`,
-%       $s_3$,  `0x0039` , `2` , calc_crc32(0x08c97f5f, 2, 0x0039) , `0xeff1aad2`,
-%       $s_4$,  `0x003f` , `2` , calc_crc32(0xeff1aad2, 2, 0x003f) , `0x08040c89`,
-%       $s_5$,  `0x0047` , `2` , calc_crc32(0x08040c89, 2, 0x0047) , `0xaa99ae2e`,
-%       $s_6$,  `0x0053` , `2` , calc_crc32(0xaa99ae2e, 2, 0x0053) , `0x7669685e`,
-%       $s_7$,  `0x008d` , `2` , calc_crc32(0x7669685e, 2, 0x008d) , `0x03e1e388`,
-%       $s_8$,  `0x00bd` , `2` , calc_crc32(0x03e1e388, 2, 0x00bd) , `0x2138ffd3`,
-%       $s_9$,  `0x00d7` , `2` , calc_crc32(0x2138ffd3, 2, 0x00d7) , `0x1ef2cbbe`,
-%       $s_10$, `0x00f5` , `0` , calc_crc32(0x1ef2cbbe, 0, 0x00f5) , `0x99c5fe05`,
-%       $e_10$, ""       , `0` , [Decapsulation]                                 , `0x99c5fe05`,
-%     ),
-% ) <example:base>

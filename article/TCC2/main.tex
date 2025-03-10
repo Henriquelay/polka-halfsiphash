@@ -29,7 +29,7 @@
 \usepackage{tikz}
 \usetikzlibrary{shapes.misc, shapes.symbols, fit, positioning, quotes}
 
-\usepackage[inline]{enumitem}
+\usepackage[inline]{enumitem} % inline lists
 
 
 \usepackage{tcolorbox}
@@ -55,9 +55,11 @@
 \newcommand{\routeids}{\texttt{route\_id}s\xspace}
 \newcommand{\timestamp}{\texttt{timestamp}\xspace}
 \newcommand{\lhash}{\texttt{l\_hash}\xspace}
+\newcommand{\nhop}{\texttt{nhop}\xspace}
 \newcommand{\polka}{\textit{PolKA}\xspace}
 \newcommand{\pIV}{\textit{P4}\xspace}
 \newcommand{\bmv}{\textit{BMv2}\xspace}
+\newcommand{\siphash}{\textit{SipHash}\xspace}
 
 
 \sloppy
@@ -85,7 +87,8 @@
   Este trabalho apresenta uma implementação de um mecanismo de sondagem e verificação de rota para um protocolo de roteamento na origem chamado \polka. O mecanismo é baseado em uma combinação de funções de hash, calculadas  por switches de núcleo sem estado, permitindo a uma parte confiável verificar se um pacote percorreu a rede ao longo do caminho definido pela origem. 
 \end{resumo}
 
-\anotacao{Checar se keywords estão boas para o SBC. Só copiei do \pathsec}
+\mycommentbox{Checar se keywords estão boas para o SBC. Só copiei do \pathsec}
+
 {\footnotesize\textbf{Keywords -- Path Aware; Network Security; Path Verification; In-networking Programming}}
 
 
