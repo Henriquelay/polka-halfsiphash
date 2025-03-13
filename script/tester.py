@@ -251,7 +251,7 @@ def addition():
         new_link = net.addLink(compromised, next_sw, port1=4, port2=2, bw=LINK_SPEED)
         info(f"*** Created link {new_link}\n")
 
-        net = set_seed_e1(net, 0xABADCAFE)
+        net = set_seed_e1(net, 0x61E8D6E7)
         net = set_seed_e10(net, 0xBADDC0DE)
 
         net.start()
@@ -273,7 +273,7 @@ def addition():
         assert pkts, "❌ No packets captured"
         pkts.sort(key=lambda pkt: pkt.time)
 
-        check_digest(pkts, 0xABADCAFE, 0xBADDC0DE)
+        check_digest(pkts, 0x61E8D6E7, 0xBADDC0DE)
 
         info("*** ADDITION TEST DONE ***\n")
 
@@ -329,7 +329,7 @@ def detour():
         info(f"*** Created link {link}\n")
         link = net.addLink(skipped, next_sw, port1=3, port2=4, bw=LINK_SPEED)
 
-        net = set_seed_e1(net, 0xBADDC0DE)
+        net = set_seed_e1(net, 0x61E8D6E7)
         net = set_seed_e10(net, 0xDEADBEEF)
 
         net.start()
@@ -351,7 +351,7 @@ def detour():
         assert pkts, "❌ No packets captured"
         pkts.sort(key=lambda pkt: pkt.time)
 
-        check_digest(pkts, 0xBADDC0DE, 0xDEADBEEF)
+        check_digest(pkts, 0x61E8D6E7, 0xDEADBEEF)
 
         info("*** DETOUR TEST DONE ***\n")
 
