@@ -13,9 +13,8 @@ um tabelão pra todos os cenários
 This section presents results for various tests representing different adversity scenarios. Each scenario is designed to evaluate the robustness and security of the system under specific attack or misconfiguration conditions. The scenarios include addition, detour, skipping, and out-of-order packet delivery. \autoref{tab:adversity_checksums} shows 
 the checksums for each scenario, highlighting the differences caused by the adversarial conditions. Note that a scenario may result in a different amount of hashes to compare (e.g. addition), so the table appears to be missing cells. For all of the scenario, a ping from $h_1$ to $h_{10}$ was performed, resulting in \routeid = \texttt{0x707b3a1d61d1d0d8b9fc91e442d0360dfc8bba4}.
 
-\begin{table}[ht!]
+\begin{table}
     \newcommand{\red}{\cellcolor{red!50}}
-
     \centering
     \scriptsize
     \begin{tabularx}{\linewidth}{ll|ll|ll|ll|ll}
@@ -85,12 +84,12 @@ the checksums for each scenario, highlighting the differences caused by the adve
         \draw (H#1) -- (E#1) -- (S#1);
     }
     \newcommand{\newtopoitemanchors}[2]{%
-        \node[core, right=2pt] (S#1) at (#2.east)   {$s_{#1}$};
+        \node[core, below right=4pt] (S#1) at (#2.east)   {$s_{#1}$};
         \node[edge, below=4pt] (E#1) at (S#1.south) {$e_{#1}$};
         \node[host, below=4pt] (H#1) at (E#1.south) {$h_{#1}$};
         \draw (H#1) -- (E#1) -- (S#1);
     }
-    \begin{minipage}{0.49\linewidth}
+    \begin{subfigure}[t]{0.49\linewidth}
         \centering
         \newcommand{\splitpoint}{5} %switch is added after s5
         \setcounter{previtem}{11}
@@ -105,24 +104,22 @@ the checksums for each scenario, highlighting the differences caused by the adve
             };
             \draw (H11) to (E1);
 
-            \node[core, right=2pt] at (S\theprevitem.east) (Sadd) {$s_{add}$};
+            \node[core, above right=4pt] at (S\theprevitem.east) (Sadd) {$s_{add}$};
             \newtopoitemanchors{6}{Sadd}
             \draw (S5) -- (Sadd) -- (S6);
             \stepcounter{previtem}
 
-            \foreach \x in {\number\numexpr\splitpoint+1\relax, ..., \nswitches} {
+            \foreach \x in {\number\numexpr\splitpoint+2\relax, ..., \nswitches} {
                 \newtopoitem{\x}{\arabic{previtem}}
-                \ifnum \theprevitem < 11
-                    \draw (S\x) to (S\theprevitem);
-                \fi
+                \draw (S\x) to (S\theprevitem);
                 \setcounter{previtem}{\x}
             };
                 
         \end{tikzpicture}
-        \caption{Addition scenario topology}
+        \caption{Addition}
         \label{topology:addition}
-    \end{minipage}
-    \begin{minipage}{0.49\linewidth}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.49\linewidth}
         \centering
         \newcommand{\splitpoint}{5} %switch is removed after s5
         \setcounter{previtem}{11}
@@ -138,17 +135,17 @@ the checksums for each scenario, highlighting the differences caused by the adve
             \draw (H11) to (E1);
                 
         \end{tikzpicture}
-        \caption{Skipping scenario topology}
+        \caption{Skipping}
         \label{topology:skipping}
-    \end{minipage}
+    \end{subfigure}
 
-    \begin{minipage}{0.49\linewidth}
+    \begin{subfigure}{0.49\linewidth}
         \centering
         \newcommand{\splitpoint}{5} %switch is detoured after s5
         \setcounter{previtem}{11}
         \begin{tikzpicture}[outer sep=auto]
             \node[host] (H11) {$h_{11}$};
-            \foreach \x in {1, ..., \splitpoint} {
+            \foreach \x in {1,...,\nswitches} {
                 \newtopoitem{\x}{\arabic{previtem}}
                 \ifnum \theprevitem < 11
                     \draw (S\x) to (S\theprevitem);
@@ -157,25 +154,14 @@ the checksums for each scenario, highlighting the differences caused by the adve
             };
             \draw (H11) to (E1);
 
-            \node[core, right=2pt] at (S\theprevitem.east) (Sdet) {$s_{det}$};
-            \newtopoitemanchors{7}{Sdet}
+            \node[core, above=2pt, anchor=south] at (S6.north) (Sdet) {$s_{det}$};
             \draw (S5) -- (Sdet) -- (S7);
-            \stepcounter{previtem}
-            \stepcounter{previtem}
-
-            \foreach \x in {\number\numexpr\splitpoint+1\relax, ..., \nswitches} {
-                \newtopoitem{\x}{\arabic{previtem}}
-                \ifnum \theprevitem < 11
-                    \draw (S\x) to (S\theprevitem);
-                \fi
-                \setcounter{previtem}{\x}
-            };
                 
         \end{tikzpicture}
-        \caption{Detour scenario topology}
+        \caption{Detour}
         \label{topology:detour}
-    \end{minipage}
-    \begin{minipage}{0.49\linewidth}
+    \end{subfigure}
+    \begin{subfigure}{0.49\linewidth}
         \centering
         \newcommand{\splitpoint}{5} %switch is changed after s5
         \setcounter{previtem}{11}
@@ -190,11 +176,11 @@ the checksums for each scenario, highlighting the differences caused by the adve
             };
             \draw (H11) to (E1);                
         \end{tikzpicture}
-        \caption{Out of order scenario topology}
+        \caption{Out of order}
         \label{topology:outoforder}
-    \end{minipage}
+    \end{subfigure}
 
-    \caption{Topologies for the different scenarios}
+    \caption{Topologies for tested scenarios}
     \label{fig:topologies}
 \end{figure}
 

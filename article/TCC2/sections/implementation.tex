@@ -53,8 +53,7 @@ Scapy is a Python library that allows the creation and manipulation of packets\c
 
 \subsection{Implementation}
 
-We define the header fields \timestamp and \lhash to indicate the uniquely-generated number and the current digest, respectively. Due to header incompatibility, probe packets operate using a different version number in the \texttt{version} field, so it is interoperable with \polka by switching between probes and regular packets using the \texttt{version} header. \polka packets use version \texttt{0x01}, and probe packets use version \texttt{0xF1}. \autoref{topology:base} shows the used topology used in the experiments.
-% It reads as follows: $s_1$ is linked to $s_2$'s port $2$ using port $2$, $s_2$ is linked to $e_2$'s port $2$ using port $1$, and so on.
+We define the header fields \timestamp and \lhash to indicate the uniquely-generated number and the current digest, respectively. Due to header incompatibility, probe packets operate using a different version number in the \texttt{version} field, so it is interoperable with \polka by switching between probes and regular packets using the \texttt{version} header. \polka packets use version \texttt{0x01}, and probe packets use version \texttt{0xF1}. \autoref{topology:base} shows the used topology used in the experiments where $s_i$ is a switch, $e_i$ is an edge node, and $h_i$ is a host. The topology is a linear chain with 10 switches and 11 hosts. The links are bidirectional, but only one direction is shown for simplicity. %The ports are numbered from $1$ to $3$, and the ports used are shown in the figure. The topology is used to test the path verification mechanism.
 
 \begin{figure}[ht]
     \centering    
