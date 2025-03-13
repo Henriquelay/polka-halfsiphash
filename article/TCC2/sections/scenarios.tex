@@ -5,7 +5,198 @@
 - explica no 1o paragraf. que nesta sec. vc vai apresentar os testes representando diferente cenenários de falha/ataque
 
 - CRIAR UMA FIGURONA, colocando as 4 fig juntas (faz um sub tit de fig (a), (b), etc)
+
+um tabelão pra todos os cenários
+
 }
+
+This section presents results for various tests representing different adversity scenarios. Each scenario is designed to evaluate the robustness and security of the system under specific attack or misconfiguration conditions. The scenarios include addition, detour, skipping, and out-of-order packet delivery. \autoref{tab:adversity_checksums} shows 
+the checksums for each scenario, highlighting the differences caused by the adversarial conditions. Note that a scenario may result in a different amount of hashes to compare (e.g. addition), so the table appears to be missing cells. For all of the scenario, a ping from $h_1$ to $h_{10}$ was performed, resulting in \routeid = \texttt{0x707b3a1d61d1d0d8b9fc91e442d0360dfc8bba4}.
+
+\begin{table}[ht!]
+    \newcommand{\red}{\cellcolor{red!50}}
+
+    \centering
+    \scriptsize
+    \begin{tabularx}{\linewidth}{ll|ll|ll|ll|ll}
+        \hline
+        \multicolumn{2}{c|}{\small Reference} & \multicolumn{2}{c|}{\small Addition} & \multicolumn{2}{c|}{\small Detour} & \multicolumn{2}{c|}{\small Skipping} & \multicolumn{2}{c}{\small Out-of-order} \\
+         \hline
+         \hline%                                Add                                      DET                             SKP                          OOO
+         seed    &\texttt{0x61e8d6e7}&seed         &\texttt{0x61e8d6e7}    &seed         &\texttt{0x61e8d6e7}    &seed        &\texttt{0x61e8d6e7}    &seed         &\texttt{0x61e8d6e7} \\
+         $s_1$   &\texttt{0xd25dc935}&$s_1$        &\texttt{0xd25dc935}    &$s_1$        &\texttt{0xd25dc935}    &$s_1$       &\texttt{0xd25dc935}    &$s_1$        &\texttt{0xd25dc935} \\
+         $s_2$   &\texttt{0x245b7ac5}&$s_2$        &\texttt{0x245b7ac5}    &$s_2$        &\texttt{0x245b7ac5}    &$s_2$       &\texttt{0x245b7ac5}    &$s_2$        &\texttt{0x245b7ac5} \\
+         $s_3$   &\texttt{0xa3b38b83}&$s_3$        &\texttt{0xa3b38b83}    &$s_3$        &\texttt{0xa3b38b83}    &$s_3$       &\texttt{0xa3b38b83}    &$s_3$        &\texttt{0xa3b38b83} \\
+         $s_4$   &\texttt{0x26aee736}&$s_4$        &\texttt{0x26aee736}    &$s_4$        &\texttt{0x26aee736}    &$s_4$       &\texttt{0x26aee736}    &$s_4$        &\texttt{0x26aee736} \\
+         $s_5$   &\texttt{0xf9b47914}&$s_5$        &\texttt{0xf9b47914}    &$s_5$        &\texttt{0xf9b47914}    &            &                       &             &                    \\
+                 &                   &\red$s_{add}$&\red\texttt{0x18c6d8d1}&             &                       &            &                       &\red$s_6$    &\red\texttt{0x4b5a6c5a} \\
+         $s_6$   &\texttt{0x18c6d8d1}&\red$s_6$    &\red\texttt{0xb69b99ec}&\red$s_{det}$&\red\texttt{0x250822a2}&\red$s_6$   &\red\texttt{0x4b5a6c5a}&\red$s_5$    &\red\texttt{0xde3862a0} \\
+         $s_7$   &\texttt{0xb69b99ec}&\red$s_7$    &\red\texttt{0xfe6117f8}&\red$s_7$    &\red\texttt{0x40298bb9}&\red$s_7$   &\red\texttt{0x002346d3}&\red$s_7$    &\red\texttt{0x648556ec} \\
+         $s_8$   &\texttt{0xfe6117f8}&\red$s_8$    &\red\texttt{0xc8d9fbde}&\red$s_8$    &\red\texttt{0xe13dcc9b}&\red$s_8$   &\red\texttt{0x7ec711aa}&\red$s_8$    &\red\texttt{0x144e1d1b} \\
+         $s_9$   &\texttt{0xc8d9fbde}&\red$s_9$    &\red\texttt{0xa6293a25}&\red$s_9$    &\red\texttt{0x1bf62c19}&\red$s_9$   &\red\texttt{0x5ee32b7b}&\red$s_9$    &\red\texttt{0x9e818f34} \\
+         \hline
+         $s_{10}$&\texttt{0xa6293a25}&\red$s_{10}$ &\red\texttt{0xf4bcdf07}&\red$s_{10}$ &\red\texttt{0xdd3a6675}&\red$s_{10}$&\red\texttt{0xc973a219}&\red$s_{10}$ &\red\texttt{0x6f694bc} \\
+         \hline
+         \hline
+    \end{tabularx}
+    \caption{Intermediary \lhash for different test scenarios with the same seed}
+    \label{tab:adversity_checksums}
+\end{table}
+
+\begin{figure}[h]
+    \centering
+    \tikzset{
+        host/.style={
+            scale=\nodescale,
+            inner sep=1pt,
+            draw,
+            rounded rectangle,
+        },
+        edge/.style={
+            scale=\nodescale,
+            inner sep=1pt,
+            draw,
+            rounded rectangle,
+            fill=blue!20,
+        },
+        core/.style={
+            scale=\nodescale,
+            inner sep=1pt,
+            draw,
+            rounded rectangle,
+            fill=green!30,
+        },
+        port/.style = {
+            % font=\tiny,
+            scale=.5,
+            inner sep=1pt,
+            draw,
+            signal,
+            fill=white,
+        }
+        }
+
+    \newcommand{\nodescale}{0.8}
+    \newcommand{\nswitches}{10}
+    \newcommand{\newtopoitem}[2]{%
+        \node[host, right=2pt] (H#1) at (H#2.east)  {$h_{#1}$};
+        \node[edge, above=4pt] (E#1) at (H#1.north) {$e_{#1}$};
+        \node[core, above=4pt] (S#1) at (E#1.north) {$s_{#1}$};
+        \draw (H#1) -- (E#1) -- (S#1);
+    }
+    \newcommand{\newtopoitemanchors}[2]{%
+        \node[core, right=2pt] (S#1) at (#2.east)   {$s_{#1}$};
+        \node[edge, below=4pt] (E#1) at (S#1.south) {$e_{#1}$};
+        \node[host, below=4pt] (H#1) at (E#1.south) {$h_{#1}$};
+        \draw (H#1) -- (E#1) -- (S#1);
+    }
+    \begin{minipage}{0.49\linewidth}
+        \centering
+        \newcommand{\splitpoint}{5} %switch is added after s5
+        \setcounter{previtem}{11}
+        \begin{tikzpicture}[outer sep=auto]
+            \node[host] (H11) {$h_{11}$};
+            \foreach \x in {1, ..., \splitpoint} {
+                \newtopoitem{\x}{\arabic{previtem}}
+                \ifnum \theprevitem < 11
+                    \draw (S\x) to (S\theprevitem);
+                \fi
+                \setcounter{previtem}{\x}
+            };
+            \draw (H11) to (E1);
+
+            \node[core, right=2pt] at (S\theprevitem.east) (Sadd) {$s_{add}$};
+            \newtopoitemanchors{6}{Sadd}
+            \draw (S5) -- (Sadd) -- (S6);
+            \stepcounter{previtem}
+
+            \foreach \x in {\number\numexpr\splitpoint+1\relax, ..., \nswitches} {
+                \newtopoitem{\x}{\arabic{previtem}}
+                \ifnum \theprevitem < 11
+                    \draw (S\x) to (S\theprevitem);
+                \fi
+                \setcounter{previtem}{\x}
+            };
+                
+        \end{tikzpicture}
+        \caption{Addition scenario topology}
+        \label{topology:addition}
+    \end{minipage}
+    \begin{minipage}{0.49\linewidth}
+        \centering
+        \newcommand{\splitpoint}{5} %switch is removed after s5
+        \setcounter{previtem}{11}
+        \begin{tikzpicture}[outer sep=auto]
+            \node[host] (H11) {$h_{11}$};
+            \foreach \x in {1,2,3,4,6,7,8,9,10} {
+                \newtopoitem{\x}{\arabic{previtem}}
+                \ifnum \theprevitem < 11
+                    \draw (S\x) to (S\theprevitem);
+                \fi
+                \setcounter{previtem}{\x}
+            };
+            \draw (H11) to (E1);
+                
+        \end{tikzpicture}
+        \caption{Skipping scenario topology}
+        \label{topology:skipping}
+    \end{minipage}
+
+    \begin{minipage}{0.49\linewidth}
+        \centering
+        \newcommand{\splitpoint}{5} %switch is detoured after s5
+        \setcounter{previtem}{11}
+        \begin{tikzpicture}[outer sep=auto]
+            \node[host] (H11) {$h_{11}$};
+            \foreach \x in {1, ..., \splitpoint} {
+                \newtopoitem{\x}{\arabic{previtem}}
+                \ifnum \theprevitem < 11
+                    \draw (S\x) to (S\theprevitem);
+                \fi
+                \setcounter{previtem}{\x}
+            };
+            \draw (H11) to (E1);
+
+            \node[core, right=2pt] at (S\theprevitem.east) (Sdet) {$s_{det}$};
+            \newtopoitemanchors{7}{Sdet}
+            \draw (S5) -- (Sdet) -- (S7);
+            \stepcounter{previtem}
+            \stepcounter{previtem}
+
+            \foreach \x in {\number\numexpr\splitpoint+1\relax, ..., \nswitches} {
+                \newtopoitem{\x}{\arabic{previtem}}
+                \ifnum \theprevitem < 11
+                    \draw (S\x) to (S\theprevitem);
+                \fi
+                \setcounter{previtem}{\x}
+            };
+                
+        \end{tikzpicture}
+        \caption{Detour scenario topology}
+        \label{topology:detour}
+    \end{minipage}
+    \begin{minipage}{0.49\linewidth}
+        \centering
+        \newcommand{\splitpoint}{5} %switch is changed after s5
+        \setcounter{previtem}{11}
+        \begin{tikzpicture}[outer sep=auto]
+            \node[host] (H11) {$h_{11}$};
+            \foreach \x in {1,2,3,4,6,5,7,8,9,10} {
+                \newtopoitem{\x}{\arabic{previtem}}
+                \ifnum \theprevitem < 11
+                    \draw (S\x) to (S\theprevitem);
+                \fi
+                \setcounter{previtem}{\x}
+            };
+            \draw (H11) to (E1);                
+        \end{tikzpicture}
+        \caption{Out of order scenario topology}
+        \label{topology:outoforder}
+    \end{minipage}
+
+    \caption{Topologies for the different scenarios}
+    \label{fig:topologies}
+\end{figure}
 
 The solution has been tested against some adversarial scenarios, and checked against the same initial seed but under the base topology as described on \ref{topology:base}.
 

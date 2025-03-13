@@ -3,20 +3,20 @@
     scale=\nodescale,
     inner sep=1pt,
     draw,
-    rectangle,
+    rounded rectangle,
   },
   edge/.style={
     scale=\nodescale,
     inner sep=1pt,
     draw,
-    rectangle,
+    rounded rectangle,
     fill=blue!20,
   },
   core/.style={
     scale=\nodescale,
     inner sep=1pt,
     draw,
-    rectangle,
+    rounded rectangle,
     fill=green!30,
   },
   port/.style = {
@@ -44,7 +44,7 @@ Furthermore, this implementation is a proof-of-concept\mycomment{está certo cha
 
 \subsection{Setup}
 
-\pIV is a language used to program the data plane of network devices\cite{p4}. Behavioral Model 2 (\bmv) is a software switch that supports the \pIV language \cite{bmv2}\mycomment{descobrir pq o `2` não renderiza no cite}. Mininet is a network emulation tool that allows the creation of virtual networks with a controlled environment\cite{mininet}. Mininet-wifi\footnote{\url{github.com/intrig-unicamp/mininet-wifi}} is a Mininet fork used in this work due to its compatibility with \bmv. Despite the name, no Wi-Fi emulating feature was used.
+\pIV is a language used to program the data plane of network devices\cite{p4}. Behavioral Model 2 (\bmv) is a software switch that supports the \pIV language \cite{bmv2}. Mininet is a network emulation tool that allows the creation of virtual networks with a controlled environment\cite{mininet}. Mininet-wifi\footnote{\url{github.com/intrig-unicamp/mininet-wifi}} is a Mininet fork used in this work due to its compatibility with \bmv. Despite the name, no Wi-Fi emulating feature was used.
 
 % Explain why using Scapy
 Scapy is a Python library that allows the creation and manipulation of packets\cite{scapy}. It is used to parse packets in the experiments and automate tests. The setup is shown in \autoref{setup}. Controller is responsible for the network state and reference signature calculation, and the Tester triggering Mininet hosts to send packets, setup Scapy for parsing them and then asserting their signatures to Controller-calculated references.
@@ -130,22 +130,24 @@ We define the header fields \timestamp and \lhash to indicate the uniquely-gener
     % \end{tikzpicture}
 
     % Without ports
+
+    \newcommand{\newtopoitem}[2]{%
+        \node[host, right=2pt] (H#1) at (H#2.east)  {$h_{#1}$};
+        \node[edge, above=4pt] (E#1) at (H#1.north) {$e_{#1}$};
+        \node[core, above=4pt] (S#1) at (E#1.north) {$s_{#1}$};
+        \draw (H#1) -- (E#1) -- (S#1);
+    }
     \setcounter{previtem}{11}
     \begin{tikzpicture}[outer sep=auto]
-        \node[host] (H11) {$h11$};
+        \node[host] (H11) {$h_11$};
         \foreach \x in {1, ..., \nswitches} {
-            \node[host, right=2pt] at (H\arabic{previtem}.east) (H\x) {$h\x$};
-            \node[edge, above=4pt] (E\x) at (H\x.north) {$e\x$};
-            \node[core, above=4pt] (S\x) at (E\x.north) {$s\x$};
-
-            \draw (H\x) -- (E\x) -- (S\x);
+            \newtopoitem{\x}{\arabic{previtem}}
+            \ifnum \theprevitem < 11
+                \draw (S\x) to (S\theprevitem);
+            \fi
             \setcounter{previtem}{\x}
         };
         \draw (H11) to (E1);
-
-        \foreach \x [count=\s from 2] in {1, ..., \number\numexpr\nswitches-1\relax} {
-            \draw (S\x) to (S\s);
-        };
             
     \end{tikzpicture}
     \caption{Baseline topology used in experimentation}
@@ -164,19 +166,19 @@ We define the header fields \timestamp and \lhash to indicate the uniquely-gener
     \begin{tikzpicture}
         \node (parse) {Parse};
             
-        \node[above right=12pt] (encap) at (parse.east) {Encapsulation};
+        \node[above right=24pt] (encap) at (parse.east) {Encapsulation};
         \node[right=12pt] (core) at (encap.east) {SDN core};
-        \draw[->, very thick] (parse.east) -- (encap);
+        \draw[->, very thick] (parse.east) -- (encap)
+            node[draw=none,pos=0.7,xshift=2pt,anchor=mid west] {\footnotesize if \texttt{0x0800} (ethernet)};
         \draw[->, very thick] (encap) -- (core);
-
         
-        \node[below right=12pt] (decap) at (parse.east) {Decapsulation};
+        \node[below right=24pt] (decap) at (parse.east) {Decapsulation};
         \node[right=12pt] (out) at (decap.east) {external net};
-        \draw[->, very thick] (parse.east) -- (decap);
+        \draw[->, very thick] (parse.east) -- (decap)
+            node[draw=none,pos=0.7,xshift=2pt, anchor=mid west] {\footnotesize if \texttt{0x1234} (polka)};
         \draw[->, very thick] (decap) -- (out);
-            
     \end{tikzpicture}
-    \caption{Edge ingress/egress logic}
+    \caption{Edge ingress/egress steps}
     \label{fig:pipeline-edge}
     \end{minipage}
     \begin{minipage}{0.49\linewidth}
@@ -189,7 +191,8 @@ We define the header fields \timestamp and \lhash to indicate the uniquely-gener
 
         \draw[->, very thick] (parse) -- (nhop);
         \draw[->, very thick] (nhop) -- (sign);
-        \draw[->, very thick] (nhop.east) ..controls ++(0,-1) and ++(0,-0.5) .. (deparse.195);
+        \draw[->, very thick] 
+            (nhop.east) ..controls ++(0,-1) and ++(0,-0.5) .. (deparse.195) node[midway,below=-4pt,draw=none] {\footnotesize if not probe};
         \draw[->, very thick] (sign) -- (deparse);
             
     \end{tikzpicture}
@@ -208,4 +211,3 @@ $$
 \lhash \leftarrow \textit{SipHash2-4-32}(\nodeid || \nhop || \timestamp || 0000000_2, \lhash)
 $$
 Meaning that a 64-bitstring made of concatenating \nodeid, \nhop, \timestamp and 7 bit wide zero is used as key for the \siphash function hashing \lhash. Inputting \nhop into the hash function protects us from some scenarios. \mycomment{explicar mais}
-

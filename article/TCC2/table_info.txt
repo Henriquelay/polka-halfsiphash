@@ -1,0 +1,423 @@
+*** Auto-testing network
+*** ADDITION TEST ***
+src_routeid: 0x707b3a1d61d1d0d8b9fc91e442d0360dfc8bba4
+dst_routeid (reply): 0x2d675f3ef2d1d3f667e65d52b6b7878ad908194d
+EXIT PORT 1 on s10
+EXIT PORT 1 on s1
+*** Checking collected packets
+*** 🔍 Tracing new route
+got 0x61e8d6e7, expects 0x61e8d6e7 on node 0xff:e1-eth2 ✅ ok
+✅ ok
+got 0xd25dc935, expects 0xd25dc935 on node 0x2b:s1-eth2 ✅ ok
+✅ ok
+got 0x245b7ac5, expects 0x245b7ac5 on node 0x2d:s2-eth3 ✅ ok
+✅ ok
+got 0xa3b38b83, expects 0xa3b38b83 on node 0x39:s3-eth3 ✅ ok
+✅ ok
+got 0x26aee736, expects 0x26aee736 on node 0x3f:s4-eth3 ✅ ok
+✅ ok
+got 0xf9b47914, expects 0xf9b47914 on node 0x47:s5-eth3 ✅ ok
+✅ ok
+got 0x250822a2, expects 0x18c6d8d1 on node 0x47:s555-eth1 ❌ Digest does not match
+❌ Digest does not match
+got 0x20d21d49, expects 0xb69b99ec on node 0x53:s6-eth3 ❌ Digest does not match
+❌ Digest does not match
+got 0xdd03c4c2, expects 0xfe6117f8 on node 0x8d:s7-eth3 ❌ Digest does not match
+❌ Digest does not match
+got 0x292e8608, expects 0xc8d9fbde on node 0xbd:s8-eth3 ❌ Digest does not match
+❌ Digest does not match
+got 0x32419384, expects 0xa6293a25 on node 0xd7:s9-eth3 ❌ Digest does not match
+❌ Digest does not match
+*** ❌ Route length does not match expected. Expected 22, got 24
+*** ❌ Leftover packets:
+*** 0xf4bcdf07 on node 0xf5:s10-eth1
+*** 0xf4bcdf07 on node 0xf5:e10-eth2
+*** 🔍 Tracing new route
+got 0xbaddc0de, expects 0xbaddc0de on node 0xff:e10-eth2 ✅ ok
+✅ ok
+got 0xeae39b01, expects 0xeae39b01 on node 0xf5:s10-eth2 ✅ ok
+✅ ok
+got 0xb32b4c06, expects 0xb32b4c06 on node 0xd7:s9-eth2 ✅ ok
+✅ ok
+got 0xed7630c0, expects 0xed7630c0 on node 0xbd:s8-eth2 ✅ ok
+✅ ok
+got 0xee3e379e, expects 0xee3e379e on node 0x8d:s7-eth2 ✅ ok
+✅ ok
+got 0xcd3f4b50, expects 0xcd3f4b50 on node 0x53:s6-eth2 ✅ ok
+✅ ok
+got 0xa9827e52, expects 0xa9827e52 on node 0x47:s5-eth2 ✅ ok
+✅ ok
+got 0xbdff909a, expects 0xbdff909a on node 0x3f:s4-eth2 ✅ ok
+✅ ok
+got 0xd8ee14d9, expects 0xd8ee14d9 on node 0x39:s3-eth2 ✅ ok
+✅ ok
+got 0x47d797b4, expects 0x47d797b4 on node 0x2d:s2-eth2 ✅ ok
+✅ ok
+got 0xa9db1869, expects 0xa9db1869 on node 0x2b:s1-eth1 ✅ ok
+✅ ok
+*** 🔍 Tracing new route
+got 0xbaddc0de, expects 0xbaddc0de on node 0xff:e10-eth2 ✅ ok
+✅ ok
+got 0xeae39b01, expects 0xeae39b01 on node 0xf5:s10-eth2 ✅ ok
+✅ ok
+got 0xb32b4c06, expects 0xb32b4c06 on node 0xd7:s9-eth2 ✅ ok
+✅ ok
+got 0xed7630c0, expects 0xed7630c0 on node 0xbd:s8-eth2 ✅ ok
+✅ ok
+got 0xee3e379e, expects 0xee3e379e on node 0x8d:s7-eth2 ✅ ok
+✅ ok
+got 0xcd3f4b50, expects 0xcd3f4b50 on node 0x53:s6-eth2 ✅ ok
+✅ ok
+got 0xa9827e52, expects 0xa9827e52 on node 0x47:s5-eth2 ✅ ok
+✅ ok
+got 0xbdff909a, expects 0xbdff909a on node 0x3f:s4-eth2 ✅ ok
+✅ ok
+got 0xd8ee14d9, expects 0xd8ee14d9 on node 0x39:s3-eth2 ✅ ok
+✅ ok
+got 0x47d797b4, expects 0x47d797b4 on node 0x2d:s2-eth2 ✅ ok
+✅ ok
+got 0xa9db1869, expects 0xa9db1869 on node 0x2b:s1-eth1 ✅ ok
+✅ ok
+*** 🔍 Tracing new route
+got 0x61e8d6e7, expects 0x61e8d6e7 on node 0xff:e1-eth2 ✅ ok
+✅ ok
+got 0xd25dc935, expects 0xd25dc935 on node 0x2b:s1-eth2 ✅ ok
+✅ ok
+got 0x245b7ac5, expects 0x245b7ac5 on node 0x2d:s2-eth3 ✅ ok
+✅ ok
+got 0xa3b38b83, expects 0xa3b38b83 on node 0x39:s3-eth3 ✅ ok
+✅ ok
+got 0x26aee736, expects 0x26aee736 on node 0x3f:s4-eth3 ✅ ok
+✅ ok
+got 0xf9b47914, expects 0xf9b47914 on node 0x47:s5-eth3 ✅ ok
+✅ ok
+got 0x250822a2, expects 0x18c6d8d1 on node 0x47:s555-eth1 ❌ Digest does not match
+❌ Digest does not match
+got 0x20d21d49, expects 0xb69b99ec on node 0x53:s6-eth3 ❌ Digest does not match
+❌ Digest does not match
+got 0xdd03c4c2, expects 0xfe6117f8 on node 0x8d:s7-eth3 ❌ Digest does not match
+❌ Digest does not match
+got 0x292e8608, expects 0xc8d9fbde on node 0xbd:s8-eth3 ❌ Digest does not match
+❌ Digest does not match
+got 0x32419384, expects 0xa6293a25 on node 0xd7:s9-eth3 ❌ Digest does not match
+❌ Digest does not match
+*** ❌ Route length does not match expected. Expected 22, got 24
+*** ❌ Leftover packets:
+*** 0xf4bcdf07 on node 0xf5:s10-eth1
+*** 0xf4bcdf07 on node 0xf5:e10-eth2
+*** ADDITION TEST DONE ***
+*** Stopping 0 controllers
+
+*** Stopping 32 links
+................................
+*** Stopping 21 switches
+s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 e2 e3 e4 e5 e6 e7 e8 e9 s555 e1 e10 
+*** Stopping 11 hosts
+h1 h2 h3 h4 h5 h6 h7 h8 h9 h10 h11 
+*** Done
+
+
+*** SKIPPING TEST ***
+src_routeid: 0x707b3a1d61d1d0d8b9fc91e442d0360dfc8bba4
+dst_routeid (reply): 0x2d675f3ef2d1d3f667e65d52b6b7878ad908194d
+EXIT PORT 1 on s10
+EXIT PORT 1 on s1
+*** Checking collected packets
+*** 🔍 Tracing new route
+got 0x61e8d6e7, expects 0x61e8d6e7 on node 0xff:e1-eth2 ✅ ok
+✅ ok
+got 0xd25dc935, expects 0xd25dc935 on node 0x2b:s1-eth2 ✅ ok
+✅ ok
+got 0x245b7ac5, expects 0x245b7ac5 on node 0x2d:s2-eth3 ✅ ok
+✅ ok
+got 0xa3b38b83, expects 0xa3b38b83 on node 0x39:s3-eth3 ✅ ok
+✅ ok
+got 0x26aee736, expects 0x26aee736 on node 0x3f:s4-eth3 ✅ ok
+✅ ok
+got 0x4b5a6c5a, expects 0xf9b47914 on node 0x53:s6-eth3 ❌ Digest does not match
+❌ Digest does not match
+got 0x2346d3, expects 0x18c6d8d1 on node 0x8d:s7-eth3 ❌ Digest does not match
+❌ Digest does not match
+got 0x7ec711aa, expects 0xb69b99ec on node 0xbd:s8-eth3 ❌ Digest does not match
+❌ Digest does not match
+got 0x5ee32b7b, expects 0xfe6117f8 on node 0xd7:s9-eth3 ❌ Digest does not match
+❌ Digest does not match
+got 0xc973a219, expects 0xc8d9fbde on node 0xf5:s10-eth1 ❌ Digest does not match
+❌ Digest does not match
+*** ❌ Route length does not match expected. Expected 22, got 20
+*** Missing digest 0xa6293a25
+*** Missing digest 0xa6293a25
+*** 🔍 Tracing new route
+got 0xabadcafe, expects 0xabadcafe on node 0xff:e10-eth2 ✅ ok
+✅ ok
+got 0x199e9383, expects 0x199e9383 on node 0xf5:s10-eth2 ✅ ok
+✅ ok
+got 0xafc51c4c, expects 0xafc51c4c on node 0xd7:s9-eth2 ✅ ok
+✅ ok
+got 0x718f543a, expects 0x718f543a on node 0xbd:s8-eth2 ✅ ok
+✅ ok
+got 0xbd6c1a69, expects 0xbd6c1a69 on node 0x8d:s7-eth2 ✅ ok
+✅ ok
+got 0xa9a9665c, expects 0xa9a9665c on node 0x53:s6-eth2 ✅ ok
+✅ ok
+got 0xed26b290, expects 0x6c884e55 on node 0x3f:s4-eth2 ❌ Digest does not match
+❌ Digest does not match
+got 0x39232468, expects 0xbc4e4c50 on node 0x39:s3-eth2 ❌ Digest does not match
+❌ Digest does not match
+got 0x7f8d871a, expects 0x83dda770 on node 0x2d:s2-eth2 ❌ Digest does not match
+❌ Digest does not match
+got 0x6987db4, expects 0xab8f808f on node 0x2b:s1-eth1 ❌ Digest does not match
+❌ Digest does not match
+*** ❌ Route length does not match expected. Expected 22, got 20
+*** Missing digest 0xb9e77ccd
+*** Missing digest 0xb9e77ccd
+*** 🔍 Tracing new route
+got 0xabadcafe, expects 0xabadcafe on node 0xff:e10-eth2 ✅ ok
+✅ ok
+got 0x199e9383, expects 0x199e9383 on node 0xf5:s10-eth2 ✅ ok
+✅ ok
+got 0xafc51c4c, expects 0xafc51c4c on node 0xd7:s9-eth2 ✅ ok
+✅ ok
+got 0x718f543a, expects 0x718f543a on node 0xbd:s8-eth2 ✅ ok
+✅ ok
+got 0xbd6c1a69, expects 0xbd6c1a69 on node 0x8d:s7-eth2 ✅ ok
+✅ ok
+got 0xa9a9665c, expects 0xa9a9665c on node 0x53:s6-eth2 ✅ ok
+✅ ok
+got 0xed26b290, expects 0x6c884e55 on node 0x3f:s4-eth2 ❌ Digest does not match
+❌ Digest does not match
+got 0x39232468, expects 0xbc4e4c50 on node 0x39:s3-eth2 ❌ Digest does not match
+❌ Digest does not match
+got 0x7f8d871a, expects 0x83dda770 on node 0x2d:s2-eth2 ❌ Digest does not match
+❌ Digest does not match
+got 0x6987db4, expects 0xab8f808f on node 0x2b:s1-eth1 ❌ Digest does not match
+❌ Digest does not match
+*** ❌ Route length does not match expected. Expected 22, got 20
+*** Missing digest 0xb9e77ccd
+*** Missing digest 0xb9e77ccd
+*** 🔍 Tracing new route
+got 0x61e8d6e7, expects 0x61e8d6e7 on node 0xff:e1-eth2 ✅ ok
+✅ ok
+got 0xd25dc935, expects 0xd25dc935 on node 0x2b:s1-eth2 ✅ ok
+✅ ok
+got 0x245b7ac5, expects 0x245b7ac5 on node 0x2d:s2-eth3 ✅ ok
+✅ ok
+got 0xa3b38b83, expects 0xa3b38b83 on node 0x39:s3-eth3 ✅ ok
+✅ ok
+got 0x26aee736, expects 0x26aee736 on node 0x3f:s4-eth3 ✅ ok
+✅ ok
+got 0x4b5a6c5a, expects 0xf9b47914 on node 0x53:s6-eth3 ❌ Digest does not match
+❌ Digest does not match
+got 0x2346d3, expects 0x18c6d8d1 on node 0x8d:s7-eth3 ❌ Digest does not match
+❌ Digest does not match
+got 0x7ec711aa, expects 0xb69b99ec on node 0xbd:s8-eth3 ❌ Digest does not match
+❌ Digest does not match
+got 0x5ee32b7b, expects 0xfe6117f8 on node 0xd7:s9-eth3 ❌ Digest does not match
+❌ Digest does not match
+got 0xc973a219, expects 0xc8d9fbde on node 0xf5:s10-eth1 ❌ Digest does not match
+❌ Digest does not match
+*** ❌ Route length does not match expected. Expected 22, got 20
+*** Missing digest 0xa6293a25
+*** Missing digest 0xa6293a25
+
+
+*** DETOUR TEST ***
+src_routeid: 0x707b3a1d61d1d0d8b9fc91e442d0360dfc8bba4
+dst_routeid (reply): 0x2d675f3ef2d1d3f667e65d52b6b7878ad908194d
+EXIT PORT 1 on s10
+EXIT PORT 1 on s1
+*** Checking collected packets
+*** 🔍 Tracing new route
+got 0x61e8d6e7, expects 0x61e8d6e7 on node 0xff:e1-eth2 ✅ ok
+✅ ok
+got 0xd25dc935, expects 0xd25dc935 on node 0x2b:s1-eth2 ✅ ok
+✅ ok
+got 0x245b7ac5, expects 0x245b7ac5 on node 0x2d:s2-eth3 ✅ ok
+✅ ok
+got 0xa3b38b83, expects 0xa3b38b83 on node 0x39:s3-eth3 ✅ ok
+✅ ok
+got 0x26aee736, expects 0x26aee736 on node 0x3f:s4-eth3 ✅ ok
+✅ ok
+got 0xf9b47914, expects 0xf9b47914 on node 0x47:s5-eth3 ✅ ok
+✅ ok
+got 0x250822a2, expects 0x18c6d8d1 on node 0x47:s555-eth1 ❌ Digest does not match
+❌ Digest does not match
+got 0x40298bb9, expects 0xb69b99ec on node 0x8d:s7-eth3 ❌ Digest does not match
+❌ Digest does not match
+got 0xe13dcc9b, expects 0xfe6117f8 on node 0xbd:s8-eth3 ❌ Digest does not match
+❌ Digest does not match
+got 0x1bf62c19, expects 0xc8d9fbde on node 0xd7:s9-eth3 ❌ Digest does not match
+❌ Digest does not match
+got 0xdd3a6675, expects 0xa6293a25 on node 0xf5:s10-eth1 ❌ Digest does not match
+❌ Digest does not match
+*** 🔍 Tracing new route
+got 0x61e8d6e7, expects 0x61e8d6e7 on node 0xff:e10-eth2 ✅ ok
+✅ ok
+got 0x5ede0db8, expects 0x5ede0db8 on node 0xf5:s10-eth2 ✅ ok
+✅ ok
+got 0x85d3f4f8, expects 0x85d3f4f8 on node 0xd7:s9-eth2 ✅ ok
+✅ ok
+got 0x73c6f681, expects 0x73c6f681 on node 0xbd:s8-eth2 ✅ ok
+✅ ok
+got 0x4537ae7d, expects 0x4537ae7d on node 0x8d:s7-eth2 ✅ ok
+✅ ok
+got 0x4e322d0b, expects 0x4e322d0b on node 0x53:s6-eth2 ✅ ok
+✅ ok
+got 0x22fad708, expects 0x22fad708 on node 0x47:s5-eth2 ✅ ok
+✅ ok
+got 0x19111db6, expects 0x19111db6 on node 0x3f:s4-eth2 ✅ ok
+✅ ok
+got 0x88834cc5, expects 0x88834cc5 on node 0x39:s3-eth2 ✅ ok
+✅ ok
+got 0xe9d03c79, expects 0xe9d03c79 on node 0x2d:s2-eth2 ✅ ok
+✅ ok
+got 0xad58a992, expects 0xad58a992 on node 0x2b:s1-eth1 ✅ ok
+✅ ok
+*** 🔍 Tracing new route
+got 0x61e8d6e7, expects 0x61e8d6e7 on node 0xff:e10-eth2 ✅ ok
+✅ ok
+got 0x5ede0db8, expects 0x5ede0db8 on node 0xf5:s10-eth2 ✅ ok
+✅ ok
+got 0x85d3f4f8, expects 0x85d3f4f8 on node 0xd7:s9-eth2 ✅ ok
+✅ ok
+got 0x73c6f681, expects 0x73c6f681 on node 0xbd:s8-eth2 ✅ ok
+✅ ok
+got 0x4537ae7d, expects 0x4537ae7d on node 0x8d:s7-eth2 ✅ ok
+✅ ok
+got 0x4e322d0b, expects 0x4e322d0b on node 0x53:s6-eth2 ✅ ok
+✅ ok
+got 0x22fad708, expects 0x22fad708 on node 0x47:s5-eth2 ✅ ok
+✅ ok
+got 0x19111db6, expects 0x19111db6 on node 0x3f:s4-eth2 ✅ ok
+✅ ok
+got 0x88834cc5, expects 0x88834cc5 on node 0x39:s3-eth2 ✅ ok
+✅ ok
+got 0xe9d03c79, expects 0xe9d03c79 on node 0x2d:s2-eth2 ✅ ok
+✅ ok
+got 0xad58a992, expects 0xad58a992 on node 0x2b:s1-eth1 ✅ ok
+✅ ok
+*** 🔍 Tracing new route
+got 0x61e8d6e7, expects 0x61e8d6e7 on node 0xff:e1-eth2 ✅ ok
+✅ ok
+got 0xd25dc935, expects 0xd25dc935 on node 0x2b:s1-eth2 ✅ ok
+✅ ok
+got 0x245b7ac5, expects 0x245b7ac5 on node 0x2d:s2-eth3 ✅ ok
+✅ ok
+got 0xa3b38b83, expects 0xa3b38b83 on node 0x39:s3-eth3 ✅ ok
+✅ ok
+got 0x26aee736, expects 0x26aee736 on node 0x3f:s4-eth3 ✅ ok
+✅ ok
+got 0xf9b47914, expects 0xf9b47914 on node 0x47:s5-eth3 ✅ ok
+✅ ok
+got 0x250822a2, expects 0x18c6d8d1 on node 0x47:s555-eth1 ❌ Digest does not match
+❌ Digest does not match
+got 0x40298bb9, expects 0xb69b99ec on node 0x8d:s7-eth3 ❌ Digest does not match
+❌ Digest does not match
+got 0xe13dcc9b, expects 0xfe6117f8 on node 0xbd:s8-eth3 ❌ Digest does not match
+❌ Digest does not match
+got 0x1bf62c19, expects 0xc8d9fbde on node 0xd7:s9-eth3 ❌ Digest does not match
+❌ Digest does not match
+*** ❌ Route length does not match expected. Expected 22, got 20
+*** Missing digest 0xa6293a25
+*** Missing digest 0xa6293a25
+
+
+*** OUTOFORDER TEST ***
+src_routeid: 0x707b3a1d61d1d0d8b9fc91e442d0360dfc8bba4
+dst_routeid (reply): 0x2d675f3ef2d1d3f667e65d52b6b7878ad908194d
+EXIT PORT 1 on s10
+EXIT PORT 1 on s1
+*** Checking collected packets
+*** 🔍 Tracing new route
+*** Comparing 0x61e8d6e7, expects 0x61e8d6e7 on node 0xff:e1-eth2 ✅ ok
+✅ ok
+*** Comparing 0xd25dc935, expects 0xd25dc935 on node 0x2b:s1-eth2 ✅ ok
+✅ ok
+*** Comparing 0x245b7ac5, expects 0x245b7ac5 on node 0x2d:s2-eth3 ✅ ok
+✅ ok
+*** Comparing 0xa3b38b83, expects 0xa3b38b83 on node 0x39:s3-eth3 ✅ ok
+✅ ok
+*** Comparing 0x26aee736, expects 0x26aee736 on node 0x3f:s4-eth3 ✅ ok
+✅ ok
+*** Comparing 0x4b5a6c5a, expects 0xf9b47914 on node 0x53:s6-eth3 ❌ Digest does not match
+❌ Digest does not match
+*** Comparing 0xde3862a0, expects 0x18c6d8d1 on node 0x47:s5-eth3 ❌ Digest does not match
+❌ Digest does not match
+*** Comparing 0x648556ec, expects 0xb69b99ec on node 0x8d:s7-eth3 ❌ Digest does not match
+❌ Digest does not match
+*** Comparing 0x144e1d1b, expects 0xfe6117f8 on node 0xbd:s8-eth3 ❌ Digest does not match
+❌ Digest does not match
+*** Comparing 0x9e818f34, expects 0xc8d9fbde on node 0xd7:s9-eth3 ❌ Digest does not match
+❌ Digest does not match
+*** Comparing 0x6f694bc, expects 0xa6293a25 on node 0xf5:s10-eth1 ❌ Digest does not match
+❌ Digest does not match
+*** 🔍 Tracing new route
+*** Comparing 0xbaddc0de, expects 0xbaddc0de on node 0xff:e10-eth2 ✅ ok
+✅ ok
+*** Comparing 0xeae39b01, expects 0xeae39b01 on node 0xf5:s10-eth2 ✅ ok
+✅ ok
+*** Comparing 0xb32b4c06, expects 0xb32b4c06 on node 0xd7:s9-eth2 ✅ ok
+✅ ok
+*** Comparing 0xed7630c0, expects 0xed7630c0 on node 0xbd:s8-eth2 ✅ ok
+✅ ok
+*** Comparing 0xee3e379e, expects 0xee3e379e on node 0x8d:s7-eth2 ✅ ok
+✅ ok
+*** Comparing 0x886d72, expects 0xcd3f4b50 on node 0x47:s5-eth2 ❌ Digest does not match
+❌ Digest does not match
+*** Comparing 0x37b0b6d8, expects 0xa9827e52 on node 0x53:s6-eth2 ❌ Digest does not match
+❌ Digest does not match
+*** Comparing 0x4fb605b1, expects 0xbdff909a on node 0x3f:s4-eth2 ❌ Digest does not match
+❌ Digest does not match
+*** Comparing 0xba1cf8d, expects 0xd8ee14d9 on node 0x39:s3-eth2 ❌ Digest does not match
+❌ Digest does not match
+*** Comparing 0x1ca3cb99, expects 0x47d797b4 on node 0x2d:s2-eth2 ❌ Digest does not match
+❌ Digest does not match
+*** Comparing 0xf2d16184, expects 0xa9db1869 on node 0x2b:s1-eth1 ❌ Digest does not match
+❌ Digest does not match
+*** 🔍 Tracing new route
+*** Comparing 0xbaddc0de, expects 0xbaddc0de on node 0xff:e10-eth2 ✅ ok
+✅ ok
+*** Comparing 0xeae39b01, expects 0xeae39b01 on node 0xf5:s10-eth2 ✅ ok
+✅ ok
+*** Comparing 0xb32b4c06, expects 0xb32b4c06 on node 0xd7:s9-eth2 ✅ ok
+✅ ok
+*** Comparing 0xed7630c0, expects 0xed7630c0 on node 0xbd:s8-eth2 ✅ ok
+✅ ok
+*** Comparing 0xee3e379e, expects 0xee3e379e on node 0x8d:s7-eth2 ✅ ok
+✅ ok
+*** Comparing 0x886d72, expects 0xcd3f4b50 on node 0x47:s5-eth2 ❌ Digest does not match
+❌ Digest does not match
+*** Comparing 0x37b0b6d8, expects 0xa9827e52 on node 0x53:s6-eth2 ❌ Digest does not match
+❌ Digest does not match
+*** Comparing 0x4fb605b1, expects 0xbdff909a on node 0x3f:s4-eth2 ❌ Digest does not match
+❌ Digest does not match
+*** Comparing 0xba1cf8d, expects 0xd8ee14d9 on node 0x39:s3-eth2 ❌ Digest does not match
+❌ Digest does not match
+*** Comparing 0x1ca3cb99, expects 0x47d797b4 on node 0x2d:s2-eth2 ❌ Digest does not match
+❌ Digest does not match
+*** Comparing 0xf2d16184, expects 0xa9db1869 on node 0x2b:s1-eth1 ❌ Digest does not match
+❌ Digest does not match
+*** 🔍 Tracing new route
+*** Comparing 0x61e8d6e7, expects 0x61e8d6e7 on node 0xff:e1-eth2 ✅ ok
+✅ ok
+*** Comparing 0xd25dc935, expects 0xd25dc935 on node 0x2b:s1-eth2 ✅ ok
+✅ ok
+*** Comparing 0x245b7ac5, expects 0x245b7ac5 on node 0x2d:s2-eth3 ✅ ok
+✅ ok
+*** Comparing 0xa3b38b83, expects 0xa3b38b83 on node 0x39:s3-eth3 ✅ ok
+✅ ok
+*** Comparing 0x26aee736, expects 0x26aee736 on node 0x3f:s4-eth3 ✅ ok
+✅ ok
+*** Comparing 0x4b5a6c5a, expects 0xf9b47914 on node 0x53:s6-eth3 ❌ Digest does not match
+❌ Digest does not match
+*** Comparing 0xde3862a0, expects 0x18c6d8d1 on node 0x47:s5-eth3 ❌ Digest does not match
+❌ Digest does not match
+*** Comparing 0x648556ec, expects 0xb69b99ec on node 0x8d:s7-eth3 ❌ Digest does not match
+❌ Digest does not match
+*** Comparing 0x144e1d1b, expects 0xfe6117f8 on node 0xbd:s8-eth3 ❌ Digest does not match
+❌ Digest does not match
+*** Comparing 0x9e818f34, expects 0xc8d9fbde on node 0xd7:s9-eth3 ❌ Digest does not match
+❌ Digest does not match
+*** Comparing 0x6f694bc, expects 0xa6293a25 on node 0xf5:s10-eth1 ❌ Digest does not match
+❌ Digest does not match
+*** OUT OF ORDER TEST DONE ***
