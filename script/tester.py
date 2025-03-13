@@ -396,7 +396,7 @@ def outoforder():
         link = net.addLink(oor[1], oor[3], port1=3, port2=2, bw=LINK_SPEED)
         info(f"*** Created link {link}\n")
 
-        net = set_seed_e1(net, 0xABADCAFE)
+        net = set_seed_e1(net, 0x61E8D6E7)
         net = set_seed_e10(net, 0xBADDC0DE)
 
         net.start()
@@ -418,7 +418,7 @@ def outoforder():
         assert pkts, "❌ No packets captured"
         pkts.sort(key=lambda pkt: pkt.time)
 
-        check_digest(pkts, 0xABADCAFE, 0xBADDC0DE)
+        check_digest(pkts, 0x61E8D6E7, 0xBADDC0DE)
 
         info("*** OUT OF ORDER TEST DONE ***\n")
 
