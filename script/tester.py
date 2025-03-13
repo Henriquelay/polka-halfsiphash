@@ -79,20 +79,23 @@ def check_digest(pkts: PacketList, seed_src: int, seed_dst: int):
     info("*** Checking collected packets\n")
     for route, expected_digests in zip(routes, (going, reply, reply, going)):
         info("*** 🔍 Tracing new route\n")
+        last_hash = None
         for pkt, expected_digest in zip(route, expected_digests):
             polka = pkt.getlayer(Polka)
             assert polka is not None, "❌ Polka layer not found"
             probe = pkt.getlayer(PolkaProbe)
             assert probe is not None, "❌ Polka probe layer not found"
             l_hash = probe.l_hash
-            info(
-                f"*** Comparing {l_hash:#08x}, expects 0x{expected_digest.hex()} "
-                f"on node {polka.ttl:#04x}:{pkt.sniffed_on} "
-            )
+            if l_hash != last_hash:
+                info(
+                    f"*** Comparing {l_hash:#08x}, expects 0x{expected_digest.hex()} "
+                    f"on node {polka.ttl:#04x}:{pkt.sniffed_on} "
+                )
             if l_hash == int.from_bytes(expected_digest, byteorder="big"):
                 info("✅ ok\n")
             else:
                 info("❌ Digest does not match\n")
+            last_hash = l_hash
 
         if len(route) != len(expected_digests):
             info(
