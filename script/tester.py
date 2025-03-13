@@ -329,7 +329,7 @@ def detour():
         info(f"*** Created link {link}\n")
         link = net.addLink(skipped, next_sw, port1=3, port2=2, bw=LINK_SPEED)
 
-        net = set_seed_e1(net, 0xDEADBEEF)
+        net = set_seed_e1(net, 0x61E8D6E7)
         net = set_seed_e10(net, 0x61E8D6E7)
 
         net.start()
@@ -351,7 +351,7 @@ def detour():
         assert pkts, "❌ No packets captured"
         pkts.sort(key=lambda pkt: pkt.time)
 
-        check_digest(pkts, 0xDEADBEEF, 0x61E8D6E7)
+        check_digest(pkts, 0x61E8D6E7, 0x61E8D6E7)
 
         info("*** DETOUR TEST DONE ***\n")
 
