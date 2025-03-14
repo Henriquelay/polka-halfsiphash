@@ -32,7 +32,7 @@
 
 \section{Implementing and Testing a Probing-Based Path Verification (PBV)}
 
-PBV consists of sending special packets (probes) with path-verification capabilities. The path verification system used is described \autoref{sec:multisigmodel}. Some assumptions are made:
+PBV consists of sending special packets (probes) with path-verification capabilities. The path verification system used is describe in \autoref{sec:multisigmodel}. Some assumptions are made:
 \begin{inlinelist}
     \item Each node is assumed to be secure, that is, no node will alter the packet in any way that is not expected. This is a common assumption in SDN networks, where a trusted party is the only entity that can alter the network state;
     \item  Every link is assumed to be perfect, that is, no packet loss, no packet corruption, and no packet duplication;
@@ -138,14 +138,14 @@ We define the header fields \timestamp and \lhash to indicate the uniquely-gener
     }
     \setcounter{previtem}{11}
     \begin{tikzpicture}[outer sep=auto]
-        \node[host] (H11) {$h_11$};
+        \node[host] (H11) {$h_{11}$};
         \foreach \x in {1, ..., \nswitches} {
             \newtopoitem{\x}{\arabic{previtem}}
             \ifnum \theprevitem < 11
                 \draw (S\x) to (S\theprevitem);
             \fi
             \setcounter{previtem}{\x}
-        };
+        }
         \draw (H11) to (E1);
             
     \end{tikzpicture}

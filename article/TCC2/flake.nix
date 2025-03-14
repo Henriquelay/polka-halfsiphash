@@ -26,10 +26,10 @@
             ))
             texlab # For LSP
           ];
-          shellHook = ''
-            code &&
-            latexmk -pdf main.tex -interaction=nonstopmode -pvc -view=none
-          '';
+          # shellHook = ''
+          #   code &&
+          #   latexmk -pdf main.tex -interaction=nonstopmode -pvc -view=none
+          # '';
         };
       }
     );
