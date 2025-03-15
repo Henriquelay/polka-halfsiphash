@@ -1,13 +1,4 @@
-\section{Adversity scenarios}
-
-\mycommentbox{
-- explica no 1o paragraf. que nesta sec. vc vai apresentar os testes representando diferente cenenários de falha/ataque
-
-- CRIAR UMA FIGURONA, colocando as 4 fig juntas (faz um sub tit de fig (a), (b), etc)
-
-um tabelão pra todos os cenários
-
-}
+\section{Adversity scenarios} \label{sec:adversity_scenarios}
 
 This section presents results for various tests representing different adversity scenarios. Each scenario is designed to evaluate the robustness and security of the system under specific attack or misconfiguration conditions. The scenarios include addition, detour, skipping, and out-of-order packet delivery. We define any switch that is not in the position defined in \autoref{topology:base} as an \textit{attacker}, not only an intruder device, so it includes misconfigured switches, controller malfunction, and any other kind of network-affecting anomaly that results in these specified scenarios.
 
@@ -194,19 +185,9 @@ This section presents results for various tests representing different adversity
     \item \label{scenario:outoforder} \textbf{Out-of-order}: Liks are change between $s_5$ and $s_6$. The packet will be delivered to $s_6$ before $s_5$, and the hashes will not match when validating the path past the attack.
 \end{enumerate}
 
-\subsection{Discussion}]
-\mycommentbox{
-- limitações
-    - recuperar dados do mininet
-        - sair dados nativamente do switch
-    - cenários que não resolvemos (replay, etc)
-    - limite de escala do cryptoscheme -- é maior ou menor q o limite do Polka
-    - tempo de cálculo do crypto line rate -- impossível de maneira realista no nosso setup atual (mininet)
-    - dificuldade de programar e debugar (wireshark) em p4
-    }
+\subsection{Discussion}
+\mycomment{Algum nome melhor pra seção?}
 
-Upon developing the solution, a set of limitations were identified:
-\begin{itemize}
-    \item As with most cryptographic solutions, the system is only as secure as the key used. If the key is compromised, the entire system is compromised, since a malicious actor can easily generate the same checksums.
-    \item Replay attack is undetectable if metadata is disconsidered. This is due to the switch entry port not being included in the validation, which allows an attacker to replay the packet from a different port.
-\end{itemize}
+Recovering data from Mininet switches is not trivial, as it does not provide a straightforward way to extract data from the switches. This limitation makes it difficult to analyze the data in real-time, so our solution depends on sniffer libraries (Scapy) to capture packets and extract the metadata. This limitation could be overcome by having the switches natively output the metadata to our controller, which would allow for a more performant and scalable solution. It was not implemented this way to keep the implementation minimal.
+
+The cryptographically secure hash solution is only secure when the key is a secret. The \nodeid secret is output in \texttt{ttl} \polka header field for debugging and presentation purposes, and this implementation should never be deployed in a real-world scenario. If the key is compromised, the entire system is compromised, as a malicious actor can easily generate the same checksums and be undetected, essentially signing whichever packets they want. Having the switch entry port included in the verification would mitigate this issue, as the attacker would need to know the exact port the packet entered the switch.

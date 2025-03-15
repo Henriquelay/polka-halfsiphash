@@ -31,8 +31,8 @@ Notably, it does not require validation, that is, it needs only to respond if $P
 
 To balance trace effectiveness and scalability, \pathsec proposes using packets themselves as probes\cite{pathsec}\cite{PINT2020}, with a lightweight multi-signature, keeping the header size fixed. That is, each core node hashes the previous' node signature with a key only itself (and the Controller) can possess, and pass it forward, and all following core nodes will do the same until the edge node is reached.
 
-\mycommentbox{Está preciso e claro dizer que ``which we will use to push information downstream''?}
 Each node's execution plan is stateless. So, in terms of signature composition, a node $n_i$ can be viewed as a function $f_{n_i} (x)$. A node can alter the header of the packet, which we will use to push information downstream and ultimately detect if the path taken is correct.
+\mycomment{Está preciso e claro dizer que ``which we will use to push information downstream''?}
 
 In order to represent all nodes by the same function, we assign a distinct key value $k$ for each node $n_i$, and use a bivariate function $f(k_{n_i}, x) = f_{n_i} (x)$.
 By using functions in two variables and enforcing one of the variables to have any value that's unique between nodes, we ensure that the function's result is unique for each switch as long as the function is collision resistant enough, that is, $f_{n_a} (x) \neq f_{n_b} (x) \iff y \neq z$.
@@ -40,4 +40,3 @@ By using functions in two variables and enforcing one of the variables to have a
 Using function composition appropriate to use, as it preserves the order-sensitive property of the path, since $f \circ g \neq g \circ f$ in a general case.
 In our model, each node will execute a single function of this composition, using the previous node's output as input.
 In this way, $ (f_{n_1} \circ f_{n_2} \circ f_{n_3})(x) = f(k_{n_3}, f(k_{n_2}, f(k_{n_1}, x))) $, $f$ being a collision-resistant function, preferably a hash function.
-

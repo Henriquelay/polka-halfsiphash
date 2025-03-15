@@ -207,6 +207,6 @@ During encapsulation, the packet can be made into a probe packet by setting the 
 
 On the core network, the hash function used is \textit{SipHash-2-4-32} (\siphash), which after calculating the next hop (\nhop) and if the packet is a probe packet \lhash is computed as
 $$
-\lhash \leftarrow \textit{SipHash2-4-32}(\nodeid || \nhop || \timestamp || 0000000_2, \lhash)
+\lhash \leftarrow \textit{SipHash2-4-32}(\nodeid || \nhop || \timestamp || \texttt{0000000}, \lhash)
 $$
-Meaning that a 64-bitstring made of concatenating \nodeid, \nhop, \timestamp and 7 bit wide zero is used as key for the \siphash function hashing \lhash. Inputting \nhop into the hash function protects us from some scenarios. \mycomment{explicar mais}
+Meaning that a 64-bit string made of concatenating \nodeid, \nhop, \timestamp with the remaining bits set to \texttt{0} for padding is used as key for the \siphash function hashing \lhash.
