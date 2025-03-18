@@ -1,40 +1,28 @@
-\section{Adversity scenarios} \label{sec:adversity_scenarios}
+\section{Testing} \label{sec:testing}
 
-This section presents results for various tests representing different adversity scenarios. Each scenario is designed to evaluate the robustness and security of the system under specific attack or misconfiguration conditions. The scenarios include addition, detour, skipping, and out-of-order packet delivery. We define any switch that is not in the position defined in \autoref{topology:base} as an \textit{attacker}, not only an intruder device, so it includes misconfigured switches, controller malfunction, and any other kind of network-affecting anomaly that results in these specified scenarios.
+This section presents the results for various tests representing different adversity scenarios. Each scenario is designed to evaluate the robustness and security of the system under specific attack or misconfiguration conditions. 
+
+\subsection{Adversity scenarios}\label{sec:adversity_scenarios}
+
+The scenarios include addition, detour, skipping, and out-of-order packet delivery. We define any switch that is not in the position defined in \autoref{topology:base} as an \textit{attacker}, not only an intruder device, so it includes misconfigured switches, controller malfunction, and any other kind of network-affecting anomaly that results in these specified scenarios:
+
+\newcommand{\refsubfigure}[1]{
+    \hyperref[fig:topologies]{\autoref*{fig:topologies}.#1}
+}
+
+\begin{enumerate}[label=\roman*.]
+    \item \label{scenario:addition} \textbf{Addition} (\refsubfigure{a}): An attacker switch is added between $s_5$ and $s_6$. It perfectly replicates the behavior of the original switch, but it does not have the same \nodeid, as it is a secret key, and the hashes will not match when validating the path past the attacker.
+    \item \label{scenario:skipping} \textbf{Skipping} (\refsubfigure{b}): A switch is removed between $s_4$ and $s_6$. The packet will skip removed switch, and the hashes will not match when validating the path past the removed switch.
+    \item \label{scenario:detour} \textbf{Detour} (\refsubfigure{c}): A switch is detoured between $s_5$ and $s_7$ into an attacker by hijacking the port that the packet should have taken exiting $s_5$ and delivering the packet in a new port to $s_7$, posing as $s_6$. The hashes will not match when validating the path past the attacker.
+    \item \label{scenario:outoforder} \textbf{Out-of-order} (\refsubfigure{c}): Links are changed between $s_5$ and $s_6$. The packet will be delivered to $s_6$ before $s_5$, and the hashes will not match when validating the path past the attack.
+\end{enumerate}
+
 
 \autoref{tab:adversity_checksums} shows the intermediary checksums for each scenario, highlighting the differences caused by the adversarial conditions, although in deployment, only the last \lhash is every used for verification. Note that a scenario may result in a different amount of hashes to compare due to different amount of intermediary hops, so the table isn't completely filled to represent a hop that does not exist on a particular route. For all scenarios, a ping from $h_1$ to $h_{10}$ was performed, resulting in $\routeid = \texttt{0x707b3a1d61d1d0d8b9fc91e442d0360dfc8bba4}$.
 
-\begin{table}
-    \newcommand{\red}{\cellcolor{red!50}}
-    \newcommand{\headersize}{\small}
-    \centering
-    \scriptsize
-    \begin{tabularx}{\linewidth}{ll|ll|ll|ll|ll}
-        \hline
-        \multicolumn{2}{c|}{\headersize Reference} & \multicolumn{2}{c|}{\headersize Addition} & \multicolumn{2}{c|}{\headersize Skipping} & \multicolumn{2}{c|}{\headersize Detour} & \multicolumn{2}{c}{\headersize Out-of-order} \\
-         \hline
-         \hline%                     |          Add                        |       SKP                          |             DET                     |         OOO
-         $s_0$   &\texttt{0x61e8d6e7}&$s_0$        &\texttt{0x61e8d6e7}    &$s_0$       &\texttt{0x61e8d6e7}    &$s_0$        &\texttt{0x61e8d6e7}    &$s_0$        &\texttt{0x61e8d6e7}     \\
-         $s_1$   &\texttt{0xd25dc935}&$s_1$        &\texttt{0xd25dc935}    &$s_1$       &\texttt{0xd25dc935}    &$s_1$        &\texttt{0xd25dc935}    &$s_1$        &\texttt{0xd25dc935}     \\
-         $s_2$   &\texttt{0x245b7ac5}&$s_2$        &\texttt{0x245b7ac5}    &$s_2$       &\texttt{0x245b7ac5}    &$s_2$        &\texttt{0x245b7ac5}    &$s_2$        &\texttt{0x245b7ac5}     \\
-         $s_3$   &\texttt{0xa3b38b83}&$s_3$        &\texttt{0xa3b38b83}    &$s_3$       &\texttt{0xa3b38b83}    &$s_3$        &\texttt{0xa3b38b83}    &$s_3$        &\texttt{0xa3b38b83}     \\
-         $s_4$   &\texttt{0x26aee736}&$s_4$        &\texttt{0x26aee736}    &$s_4$       &\texttt{0x26aee736}    &$s_4$        &\texttt{0x26aee736}    &$s_4$        &\texttt{0x26aee736}     \\
-         $s_5$   &\texttt{0xf9b47914}&$s_5$        &\texttt{0xf9b47914}    &            &                       &$s_5$        &\texttt{0xf9b47914}    &             &                        \\
-                 &                   &\red$s_{add}$&\red\texttt{0x18c6d8d1}&            &                       &             &                       &\red$s_6$    &\red\texttt{0x4b5a6c5a} \\
-         $s_6$   &\texttt{0x18c6d8d1}&\red$s_6$    &\red\texttt{0xb69b99ec}&\red$s_6$   &\red\texttt{0x4b5a6c5a}&\red$s_{det}$&\red\texttt{0x250822a2}&\red$s_5$    &\red\texttt{0xde3862a0} \\
-         $s_7$   &\texttt{0xb69b99ec}&\red$s_7$    &\red\texttt{0xfe6117f8}&\red$s_7$   &\red\texttt{0x002346d3}&\red$s_7$    &\red\texttt{0x40298bb9}&\red$s_7$    &\red\texttt{0x648556ec} \\
-         $s_8$   &\texttt{0xfe6117f8}&\red$s_8$    &\red\texttt{0xc8d9fbde}&\red$s_8$   &\red\texttt{0x7ec711aa}&\red$s_8$    &\red\texttt{0xe13dcc9b}&\red$s_8$    &\red\texttt{0x144e1d1b} \\
-         $s_9$   &\texttt{0xc8d9fbde}&\red$s_9$    &\red\texttt{0xa6293a25}&\red$s_9$   &\red\texttt{0x5ee32b7b}&\red$s_9$    &\red\texttt{0x1bf62c19}&\red$s_9$    &\red\texttt{0x9e818f34} \\
-         \hline
-         $s_{10}$&\texttt{0xa6293a25}&\red$s_{10}$ &\red\texttt{0xf4bcdf07}&\red$s_{10}$&\red\texttt{0xc973a219}&\red$s_{10}$ &\red\texttt{0xdd3a6675}&\red$s_{10}$ &\red\texttt{0x6f694bc}  \\
-         \hline
-         \hline
-    \end{tabularx}
-    \caption{Intermediary \lhash for different test scenarios with the same seed}
-    \label{tab:adversity_checksums}
-\end{table}
 
-\begin{figure}[ht]
+
+\begin{figure}
     \centering
     \tikzset{
         host/.style={
@@ -178,16 +166,40 @@ This section presents results for various tests representing different adversity
 
 %attack model
 
-\begin{enumerate}[label=\roman*.]
-    \item \label{scenario:addition} \textbf{Addition}: An attacker switch is added between $s_5$ and $s_6$. It perfectly replicates the behavior of the original switch, but it does not have the same \nodeid, as it is a secret key, and the hashes will not match when validating the path past the attacker.
-    \item \label{scenario:skipping} \textbf{Skipping}: A switch is removed between $s_4$ and $s_6$. The packet will skip removed switch, and the hashes will not match when validating the path past the removed switch.
-    \item \label{scenario:detour} \textbf{Detour}: A switch is detoured between $s_5$ and $s_7$ into an attacker by hijacking the port that the packet should have taken exiting $s_5$ and delivering the packet in a new port to $s_7$, posing as $s_6$. The hashes will not match when validating the path past the attacker.
-    \item \label{scenario:outoforder} \textbf{Out-of-order}: Liks are change between $s_5$ and $s_6$. The packet will be delivered to $s_6$ before $s_5$, and the hashes will not match when validating the path past the attack.
-\end{enumerate}
+
+
+\begin{table}
+    \newcommand{\red}{\cellcolor{red!50}}
+    \newcommand{\headersize}{\small}
+    \centering
+    \scriptsize
+    \begin{tabularx}{\linewidth}{ll|ll|ll|ll|ll}
+        \hline
+        \multicolumn{2}{c|}{\headersize Reference} & \multicolumn{2}{c|}{\headersize Addition} & \multicolumn{2}{c|}{\headersize Skipping} & \multicolumn{2}{c|}{\headersize Detour} & \multicolumn{2}{c}{\headersize Out-of-order} \\
+         \hline
+         \hline%                     |          Add                        |       SKP                          |             DET                     |         OOO
+         $s_0$   &\texttt{0x61e8d6e7}&$s_0$        &\texttt{0x61e8d6e7}    &$s_0$       &\texttt{0x61e8d6e7}    &$s_0$        &\texttt{0x61e8d6e7}    &$s_0$        &\texttt{0x61e8d6e7}     \\
+         $s_1$   &\texttt{0xd25dc935}&$s_1$        &\texttt{0xd25dc935}    &$s_1$       &\texttt{0xd25dc935}    &$s_1$        &\texttt{0xd25dc935}    &$s_1$        &\texttt{0xd25dc935}     \\
+         $s_2$   &\texttt{0x245b7ac5}&$s_2$        &\texttt{0x245b7ac5}    &$s_2$       &\texttt{0x245b7ac5}    &$s_2$        &\texttt{0x245b7ac5}    &$s_2$        &\texttt{0x245b7ac5}     \\
+         $s_3$   &\texttt{0xa3b38b83}&$s_3$        &\texttt{0xa3b38b83}    &$s_3$       &\texttt{0xa3b38b83}    &$s_3$        &\texttt{0xa3b38b83}    &$s_3$        &\texttt{0xa3b38b83}     \\
+         $s_4$   &\texttt{0x26aee736}&$s_4$        &\texttt{0x26aee736}    &$s_4$       &\texttt{0x26aee736}    &$s_4$        &\texttt{0x26aee736}    &$s_4$        &\texttt{0x26aee736}     \\
+         $s_5$   &\texttt{0xf9b47914}&$s_5$        &\texttt{0xf9b47914}    &            &                       &$s_5$        &\texttt{0xf9b47914}    &             &                        \\
+                 &                   &\red$s_{add}$&\red\texttt{0x18c6d8d1}&            &                       &             &                       &\red$s_6$    &\red\texttt{0x4b5a6c5a} \\
+         $s_6$   &\texttt{0x18c6d8d1}&\red$s_6$    &\red\texttt{0xb69b99ec}&\red$s_6$   &\red\texttt{0x4b5a6c5a}&\red$s_{det}$&\red\texttt{0x250822a2}&\red$s_5$    &\red\texttt{0xde3862a0} \\
+         $s_7$   &\texttt{0xb69b99ec}&\red$s_7$    &\red\texttt{0xfe6117f8}&\red$s_7$   &\red\texttt{0x002346d3}&\red$s_7$    &\red\texttt{0x40298bb9}&\red$s_7$    &\red\texttt{0x648556ec} \\
+         $s_8$   &\texttt{0xfe6117f8}&\red$s_8$    &\red\texttt{0xc8d9fbde}&\red$s_8$   &\red\texttt{0x7ec711aa}&\red$s_8$    &\red\texttt{0xe13dcc9b}&\red$s_8$    &\red\texttt{0x144e1d1b} \\
+         $s_9$   &\texttt{0xc8d9fbde}&\red$s_9$    &\red\texttt{0xa6293a25}&\red$s_9$   &\red\texttt{0x5ee32b7b}&\red$s_9$    &\red\texttt{0x1bf62c19}&\red$s_9$    &\red\texttt{0x9e818f34} \\
+         \hline
+         $s_{10}$&\texttt{0xa6293a25}&\red$s_{10}$ &\red\texttt{0xf4bcdf07}&\red$s_{10}$&\red\texttt{0xc973a219}&\red$s_{10}$ &\red\texttt{0xdd3a6675}&\red$s_{10}$ &\red\texttt{0x6f694bc}  \\
+         \hline
+         \hline
+    \end{tabularx}
+    \caption{Intermediary \lhash for different test scenarios with the same seed}
+    \label{tab:adversity_checksums}
+\end{table}
 
 \subsection{Discussion}
-\mycomment{Algum nome melhor pra seção?}
 
-Recovering data from Mininet switches is not trivial, as it does not provide a straightforward way to extract data from the switches. This limitation makes it difficult to analyze the data in real-time, so our solution depends on sniffer libraries (Scapy) to capture packets and extract the metadata. This limitation could be overcome by having the switches natively output the metadata to our controller, which would allow for a more performant and scalable solution. It was not implemented this way to keep the implementation minimal.
+Recovering data from Mininet switches is not trivial, as it does not provide a straightforward way to extract data from the switches. This limitation makes it difficult to analyze the data in real-time, so our solution depends on sniffer libraries (Scapy) to capture packets and extract the metadata. This limitation could be overcome by having the switches natively output the metadata to our controller, which would allow for a more performant and scalable solution. It was not implemented to keep the implementation minimal.
 
 The cryptographically secure hash solution is only secure when the key is a secret. The \nodeid secret is output in \texttt{ttl} \polka header field for debugging and presentation purposes, and this implementation should never be deployed in a real-world scenario. If the key is compromised, the entire system is compromised, as a malicious actor can easily generate the same checksums and be undetected, essentially signing whichever packets they want. Having the switch entry port included in the verification would mitigate this issue, as the attacker would need to know the exact port the packet entered the switch.

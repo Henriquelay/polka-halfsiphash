@@ -1,19 +1,27 @@
 \section{Problem definition} \label{sec:definition} 
 
 % Top to bottom, indo do sistema mais amplo ao programa em baixo nível
-A \pathsec network consists of a logically centralized SDN Controller that selects routing paths and configures the nodes, edge nodes that embed metadata into packets, core nodes that execute basic packet forwarding with light signatures operations (proof-of-transit), and smart contracts running on a blockchain to support signatures verification and to register path compliance. A unique Residue Number System-based is used to generate a \routeid, from which a core node calculates the next hop, using the node's secret \nodeid\cite{pathsec}. For auditability, the resulting multi-signed would then be sent to a smart contract and blockchain system which are out of scope for this paper.
+
+
+A \pathsec network consists of a logically centralized SDN Controller that selects routing paths and configures the core and edge nodes. While ingress and egress edges encapsulates/decapsulates metadata into/from packets, core nodes execute basic packet forwarding with light signatures operations (proof-of-transit).
+
+%Calculating each hop is done exploiting the Chinese Remainder Theorem\cite{polka}, and is out of the scope of this paper. 
+\pathsec is based on Polka's source routing which explores the Chinese Remainder Theorem\cite{polka}.
+\polka assigns a unique Route Identifier (\routeid) to each path in the core network, and for each core switch it defines a secret \nodeid. Once a packet is associated to a specific route, each packet in this packet will carry in its header the respective \routeid (embeded by the ingress edge). Then the core switches use the \routeid and their respective \nodeids to calculate the output \portid (it is a result of the Residue Number System (RNS)-based encoding\cite{pathsec}, which is out of the scope of this paper), routing the packets to the next core node in the expected path for the \routeid.
+
+Furthermore, \pathsec designs a simplified signing mechanism using the uniqueness of the switch-port pair (\nodeid, \portid) for each \routeid and its inherent secret component in the routing system, combined with cryptographic hashing functions. Every switch-port pair acts as a native secret code, enabling a lightweight multi-signature scheme based on Hash-based Message Authentication Code (HMAC): before routing a packet, a core node replaces the lightweight signature from the previous core node (embedded in the packet header), with a new one, hashing the previous one with the pair (\nodeid, \portid). This mechanism ensures an inherent property of the routing system that facilitates efficient path verification. 
+
+In the complete solution proposed by \pathsec, once packets reach the egress edges, the final lightweight multi-signatures are extracted from the packets and sent to smart contracts deployed in a blockchain. These signatures are then compared to reference signatures previously registered by a trusted party (the network controller), allowing to verify packets' \textit{proof-of-transit} and to register path compliance.
+
 
 % \anotacao{Acho que esse título (ou conteúdo) pode melhorar. O \pathsec não diz explícitamente que usar o \polka, então parece "irrelevante" pro propósito do artigo}
-% \subsection{Probing-Based Path Verification in \polka} \label{sec:PBV}
-% \anotacao{explicar o que é \polka, *o que é um node*}
 
 
 \subsection{Problem formalization} \label{sec:formalization}
 \newcommand{\Pie}{P_{i \rightarrow e}}
 
-Let $i$ be the source node (\textbf{i}ngress node) and $e$ be the destination node (\textbf{e}gress node). Let the path from $i$ to $e$ $\Pie$ be a sequence of nodes: the path is defined by $ \Pie = (i, s_1, s_2, ..., s_{n - 1}, s_n, e) $\label{eq:path-def}, $s_n$ being the $n$-th core node in the path.
+Let $i$ be the source node (\textbf{i}ngress node) and $e$ be the destination node (\textbf{e}gress node). Let the path from $i$ to $e$ $\Pie$ be a sequence of nodes: the path is defined by $ \Pie = (i, s_1, s_2, ..., s_{n - 1}, s_n, e) $\label{eq:path-def}, $s_n$ being the $n$-th core node in the path. In SR protocols, packets' routes through the core network are defined in $i$. That is, $i$ sets the packet header with enough information for each core node to calculate the next hop. 
 
-In SR protocols, the route up to the protocol boundary (usually, the SDN border) is defined in $i$. That is, $i$ sets the packet header with enough information for each core node to calculate the next hop. Calculating each hop is done exploiting the Chinese Remainder Theorem\cite{polka}, and is out of the scope of this paper. 
 
 The main problem we are trying to solve is path verification, that is, to have a way to ensure if the packet follows the path defined. A solution must be able to identify if the packet:
 \begin{inlinelist}
@@ -22,21 +30,30 @@ The main problem we are trying to solve is path verification, that is, to have a
     \item has \textbf{not} passed through any node that is \textbf{not} in the path.
 \end{inlinelist}
 
-More formally, given a sequence of nodes $P_{i \rightarrow e}$, and a captured sequence of nodes actually traversed $P_j$, a solution must identify if $P_{i \rightarrow e} = P_j$.
+
+
+
+More formally, given a routed sequence of nodes $P_{i \rightarrow e}$, and a captured sequence of nodes actually traversed $P_j$, a solution must identify if $P_{i \rightarrow e} = P_j$.
 Notably, it does not require validation, that is, it needs only to respond if $P_{i \rightarrow e} = P_j$ and does not need to know any of their contents or check their validity as a route.
 
 
 \subsection{Multi-signature model for Path Verification} \label{sec:multisigmodel}
 %cite pathsec
 
-To balance trace effectiveness and scalability, \pathsec proposes using packets themselves as probes\cite{pathsec}\cite{PINT2020}, with a lightweight multi-signature, keeping the header size fixed. That is, each core node hashes the previous' node signature with a key only itself (and the Controller) can possess, and pass it forward, and all following core nodes will do the same until the edge node is reached.
+To balance trace effectiveness and scalability, \pathsec proposes using packets themselves as probes\cite{pathsec}\cite{PINT2020}, with a lightweight multi-signature, keeping the header size fixed. That is, each core node hashes the previous node's signature with a key only itself (and the Controller) can possess, and pass the hash result forward, replacing the previous, and all following core nodes will do the same until the edge node is reached. 
 
-Each node's execution plan is stateless. So, in terms of signature composition, a node $n_i$ can be viewed as a function $f_{n_i} (x)$. A node can alter the header of the packet, which we will use to push information downstream and ultimately detect if the path taken is correct.
-\mycomment{Está preciso e claro dizer que ``which we will use to push information downstream''?}
+Each node's execution plan is stateless. So, in terms of signature composition, a node $n_i$ can be viewed as a function $f_{n_i} (x)$. A node can alter the header of the packet, which
+%BETA
+% we will use
+is used to push information downstream,
+%and 
+allowing ultimately to detect if the path taken is correct.
+%BETA
+%\mycomment{Está preciso e claro dizer que ``which we will use to push information downstream''?}
 
 In order to represent all nodes by the same function, we assign a distinct key value $k$ for each node $n_i$, and use a bivariate function $f(k_{n_i}, x) = f_{n_i} (x)$.
 By using functions in two variables and enforcing one of the variables to have any value that's unique between nodes, we ensure that the function's result is unique for each switch as long as the function is collision resistant enough, that is, $f_{n_a} (x) \neq f_{n_b} (x) \iff y \neq z$.
 
-Using function composition appropriate to use, as it preserves the order-sensitive property of the path, since $f \circ g \neq g \circ f$ in a general case.
+Using function composition is appropriate, as it preserves the order-sensitive property of the path, since $f \circ g \neq g \circ f$ in a general case.
 In our model, each node will execute a single function of this composition, using the previous node's output as input.
-In this way, $ (f_{n_1} \circ f_{n_2} \circ f_{n_3})(x) = f(k_{n_3}, f(k_{n_2}, f(k_{n_1}, x))) $, $f$ being a collision-resistant function, preferably a hash function.
+In this way, $ (f_{n_1} \circ f_{n_2} \circ f_{n_3})(x) = f(k_{n_3}, f(k_{n_2}, f(k_{n_1}, x))) $, $f$ being a collision-resistant function, preferably a cryptographic hash function.

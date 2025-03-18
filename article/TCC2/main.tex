@@ -1,17 +1,3 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% How to use writeLaTeX: 
-%
-% You edit the source code here on the left, and the preview on the
-% right shows you the result within a few seconds.
-%
-% Bookmark this page and share the URL with your co-authors. They can
-% edit at the same time!
-%
-% You can upload figures, bibliographies, custom classes and
-% styles using the files menu.
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \documentclass[12pt]{article}
 
 \usepackage{sbc-template}
@@ -57,6 +43,8 @@
 \newcommand{\pathsec}{\textbf{PathSec}\xspace}
 \newcommand{\nodeid}{\texttt{node\_id}\xspace}
 \newcommand{\nodeids}{\texttt{node\_id}s\xspace}
+\newcommand{\portid}{\texttt{port\_id}\xspace}
+\newcommand{\portids}{\texttt{port\_id}s\xspace}
 \newcommand{\routeid}{\texttt{route\_id}\xspace}
 \newcommand{\routeids}{\texttt{route\_id}s\xspace}
 \newcommand{\timestamp}{\texttt{timestamp}\xspace}
@@ -86,14 +74,11 @@
 \maketitle
 
 \begin{abstract}
-  Presents an implementation of a route probing and validation mechanism for the source routing protocol \polka. The mechanism is based on a composition of checksum functions on stateless core switches, which allows a trusted party to verify if a packet traversed the network along the source-defined path.
 \end{abstract}
      
 \begin{resumo} 
-  Este trabalho apresenta uma implementação de um mecanismo de sondagem e verificação de rota para um protocolo de roteamento na origem chamado \polka. O mecanismo é baseado em uma combinação de funções de hash, calculadas  por switches de núcleo sem estado, permitindo a uma parte confiável verificar se um pacote percorreu a rede ao longo do caminho definido pela origem. 
+  Este trabalho apresenta uma implementação prova-de-conceito e testes do \pathsec\cite{pathsec}, um mecanismo de sondagem e verificação de rota para o protocolo de roteamento na origem \polka. O mecanismo é baseado em uma combinação de funções hash, calculadas por switches de núcleo sem estado, e permitem uma parte confiável verificar se um pacote percorreu a rede ao longo do caminho definido pela origem. A implementação foi feita no Mininet usando BMv2 programados em P4.
 \end{resumo}
-
-\mycommentbox{Checar se keywords estão boas para o SBC. Só copiei do \pathsec}
 
 {\footnotesize\textbf{Keywords -- Path Aware; Network Security; Path Verification; In-networking Programming}}
 
