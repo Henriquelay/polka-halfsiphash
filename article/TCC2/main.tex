@@ -64,7 +64,7 @@
 
 
 \address{Department of Informatics\\Federal University of Espírito Santo (UFES) -- Vitória, ES -- Brazil
-  \email{henrique.layber@edu.ufes.br,\{roberta.gomes, magnos.martinello\}@ufes.br}
+\email{henrique.layber@edu.ufes.br,\{roberta.gomes, magnos.martinello\}@ufes.br}
 }
 
 
@@ -74,10 +74,14 @@
 \maketitle
 
 \begin{abstract}
+    This work presents an implementation as proof-of-concept  for testing of a path-aware routing named \pathsec. It relies on a path probing and verification mechanism for the source-routing protocol \polka. The mechanism leverages a combination of hash functions, computed by stateless core switches, enabling a trusted party to verify whether a packet traversed the network along the source-defined path. The implementation was carried out in Mininet using BMv2 switches programmed in P4. Different adversity scenarios are evaluated to assess the system's robustness and security against specific attacks. The results confirm that the probing-based approach successfully detected the various path deviation attacks or misconfigurations.
+
+    
 \end{abstract}
      
 \begin{resumo} 
-  Este trabalho apresenta uma implementação prova-de-conceito e testes do \pathsec\cite{pathsec}, um mecanismo de sondagem e verificação de rota para o protocolo de roteamento na origem \polka. O mecanismo é baseado em uma combinação de funções hash, calculadas por switches de núcleo sem estado, e permitem uma parte confiável verificar se um pacote percorreu a rede ao longo do caminho definido pela origem. A implementação foi feita no Mininet usando BMv2 programados em P4.
+    %Este trabalho apresenta uma implementação como prova-de-conceito para testes do \pathsec\cite{pathsec}, um mecanismo de sondagem e verificação de rota para o protocolo de roteamento na origem \polka. O mecanismo é baseado em uma combinação de funções hash, calculadas por switches de núcleo sem estado, e permitem uma parte confiável verificar se um pacote percorreu a rede ao longo do caminho definido pela origem. A implementação foi feita no Mininet usando BMv2 programados em P4.
+Este trabalho apresenta uma implementação como prova de conceito para testar um roteamento ciente de caminho denominado \pathsec. O trabalho se baseia em um mecanismo de sondagem e verificação de caminho para o protocolo de roteamento de fonte \polka. O mecanismo utiliza uma combinação de funções hash, calculadas por switches de núcleo sem estado, permitindo que uma entidade confiável verifique se um pacote percorreu a rede conforme o caminho definido na origem. A implementação foi realizada no Mininet usando switches BMv2 programados em P4. Diferentes cenários adversos foram avaliados para testar a robustez e segurança do sistema contra ataques específicos. Os resultados confirmam que a abordagem baseada em sondagem detectou com sucesso diversos ataques de desvio de caminho ou configurações incorretas.
 \end{resumo}
 
 {\footnotesize\textbf{Keywords -- Path Aware; Network Security; Path Verification; In-networking Programming}}

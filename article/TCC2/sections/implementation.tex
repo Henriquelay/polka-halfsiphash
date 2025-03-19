@@ -30,7 +30,7 @@
 }
 \newcounter{previtem}
 
-\section{Implementing and Testing a Probing-Based Path Verification (PBV)}
+\section{Implementing and Testing a Probing-Based Path Verification (PBV)} \label{sec:implementation}
 
 PBV consists of sending special packets (probes) with path-verification capabilities. The path verification system used is describe in \autoref{sec:multisigmodel}. Some assumptions are made:
 \begin{inlinelist}
@@ -47,7 +47,7 @@ Furthermore, this implementation is a proof-of-concept, and there is little conc
 
 \subsection{Setup}
 
-\pIV is a language used to program the data plane of network devices \cite{p4}. Behavioral Model 2 (\bmv) is a software switch that supports the \pIV language \cite{bmv2}. Mininet is a network emulation tool that allows the creation of virtual networks with a controlled environment \cite{mininet}. Mininet-wifi\footnote{\url{github.com/intrig-unicamp/mininet-wifi}} is a Mininet fork used in this work due to its compatibility with \bmv. Despite the name, no Wi-Fi emulating feature was used.
+\pIV is a language used to program the data plane of network devices \cite{p4}. Behavioral Model 2 (\bmv) is a software switch that supports the \pIV language \cite{bmv2}. Mininet is a network emulation tool that allows the creation of virtual networks with a controlled environment \cite{mininet}. Mininet-wifi\cite{mininet-wifi} is a Mininet fork used in this work due to its compatibility with \bmv. Despite the name, no Wi-Fi emulating feature was used.
 
 The Controller is responsible for the network setup and for calculating reference signatures.
 In our implementation, the Python Script that controls Mininet acts a controller, and itself is not a network entity in Mininet.
@@ -65,9 +65,9 @@ We define the header fields \timestamp and \lhash, both 32-bits wide, to indicat
 \autoref{topology:base} shows the used topology used in the experiments where $s_i$ is a switch, $e_i$ is an edge node, and $h_i$ is a host. The topology is a linear chain with 10 switches and 11 hosts. The links are bidirectional, but only one direction is shown for simplicity. %The ports are numbered from $1$ to $3$, and the ports used are shown in the figure. The topology is used to test the path verification mechanism.
 
 \begin{figure}[ht]
-    \centering    
-    \begin{minipage}{0.49\linewidth}
-    \centering    
+    \centering
+    \begin{subfigure}[b]{0.49\linewidth}
+    \centering
     \begin{tikzpicture}[
         outer sep=auto,
         every node/.style={draw, rectangle, label distance=-4pt},
@@ -93,52 +93,12 @@ We define the header fields \timestamp and \lhash, both 32-bits wide, to indicat
     \end{tikzpicture}
     \caption{Experimentation setup}
     \label{setup}
-    \end{minipage}
-    \begin{minipage}{0.49\linewidth}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\linewidth}
     \centering    
     \newcommand{\nodescale}{0.8}
     \newcommand{\nswitches}{10}
-    % with ports
-    % \newcommand{\hspacing}{0.95}
-    % \newcommand{\vspacing}{0.95}
-    % \newcommand{\nodescale}{0.8}
-    % \newcommand{\nswitches}{10}
-    % \begin{tikzpicture}[outer sep=auto]
-    %     \foreach \x in {1, ..., \nswitches} {
-    %         \node[host] (H\x) at (\x*\hspacing, 0*\vspacing) {$h\x$};
-    %         \node[edge] (E\x) at (\x*\hspacing, 0.95*\vspacing) {$e\x$};
-    %         \node[core] (S\x) at (\x*\hspacing, 2*\vspacing) {$s\x$};
-
-    %         \draw (H\x) to
-    %             node[pos=0.1, port, signal to=north]{1}
-    %             node[pos=0.9, port, signal to=south]{1}
-    %             (E\x);
-    %         \draw (E\x) to
-    %             node[pos=0.1, port, signal to=north]{2}
-    %             node[pos=0.9, port, signal to=south]{1}
-    %             (S\x);
-    %     };
-    %     \node[host] (H11) at (0*\hspacing, 0*\vspacing) {$h11$};
-    %     \draw (H11) to
-    %         node[pos=0.1, port, signal to=north]{1}
-    %         node[pos=0.9, port, signal to=south]{3}
-    %         (E1);
-        
-    %     \draw (S1) to
-    %         node[pos=-0.1, port, signal to=right]{2}
-    %         node[pos=1.1, port, signal to=left]{2}
-    %         (S2);
-    %     \foreach \x in {2, ...,  \number\numexpr\nswitches-1\relax } {
-    %         \draw (S\x) to
-    %             node[pos=-0.1, port, signal to=right]{3}
-    %             node[pos=1.1, port, signal to=left]{2}
-    %             (S\number\numexpr\x+ 1\relax);
-    %     };
-            
-    % \end{tikzpicture}
-
-    % Without ports
-
     \newcommand{\newtopoitem}[2]{%
         \node[host, right=2pt] (H#1) at (H#2.east)  {$h_{#1}$};
         \node[edge, above=4pt] (E#1) at (H#1.north) {$e_{#1}$};
@@ -160,7 +120,8 @@ We define the header fields \timestamp and \lhash, both 32-bits wide, to indicat
     \end{tikzpicture}
     \caption{Baseline topology used in experimentation}
     \label{topology:base}
-    \end{minipage}
+    \end{subfigure}
+    \hfill
 % \end{figure}
 % Joins both figures into one
 % \begin{figure}[ht]
@@ -169,7 +130,7 @@ We define the header fields \timestamp and \lhash, both 32-bits wide, to indicat
         outer sep=auto,
         every node/.style={draw, chamfered rectangle, label distance=-4pt, inner sep=2pt},
     }
-    \begin{minipage}{0.49\linewidth}
+    \begin{subfigure}[b]{0.49\linewidth}
     \centering    
     \begin{tikzpicture}
         \node (parse) {Parse};
@@ -186,10 +147,11 @@ We define the header fields \timestamp and \lhash, both 32-bits wide, to indicat
             node[draw=none,pos=0.7,xshift=2pt, anchor=mid west] {\footnotesize if \texttt{0x1234} (polka)};
         \draw[->, very thick] (decap) -- (out);
     \end{tikzpicture}
-    \caption{Edge ingress/egress steps}
+    \caption{Edge ingress/egress pipeline}
     \label{fig:pipeline-edge}
-    \end{minipage}
-    \begin{minipage}{0.49\linewidth}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\linewidth}
     \centering    
     \begin{tikzpicture}
         \node (parse) {Parse};
@@ -204,9 +166,9 @@ We define the header fields \timestamp and \lhash, both 32-bits wide, to indicat
         \draw[->, very thick] (sign) -- (deparse);
             
     \end{tikzpicture}
-    \caption{Data plane steps \mycomment{Muito simples?}}
+    \caption{Data plane pipeline}
     \label{fig:pipeline-core}
-    \end{minipage}
+    \end{subfigure}
 \end{figure}
 
 Edge nodes can receive both \polka packets or IPv4 packets. If the IPv4 protocol \texttt{ethertype} header field is detected (\texttt{0x0800}), it must be a packet from outside the network, so it proceeds with the role of an ingress edge and \polka headers need to be added. Let this process be called \textit{encapsulation}. If a \polka protocol \texttt{ethertype} field is detected (\texttt{0x1234}), it must be a packet from the network core, so it proceeds with the role of an egress edge and the original IPv4 packet must be unwrapped. Let this process be called \textit{decapsulation}. This flow is illustrated in \autoref{fig:pipeline-edge}.
@@ -218,7 +180,7 @@ During encapsulation, the packet can be made into a probe packet by setting the 
 On the core network, the hash function used is \textit{SipHash-2-4-32}\cite{siphash} (\siphash). 
 %BETA
 %which 
-After calculating the next hop (\nhop) and if the packet is a probe packet \lhash is computed as
+After calculating the next output port (\nhop) and if the packet is a probe packet, \lhash is computed as
 $$
 \lhash \leftarrow \textit{SipHash2-4-32}(\nodeid || \nhop || \timestamp || \texttt{0000000}, \lhash)
 $$

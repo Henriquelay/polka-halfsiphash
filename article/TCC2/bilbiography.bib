@@ -34,12 +34,17 @@
   doi={10.1109/TNSM.2024.3389457}}
 
 
-@article{pathsec,
-  title = {PathSec: Path-Aware Secure Routing with Native Path Verification and Auditability},
-  author = {Magnos Martinello and Roberta Lima Gomes and Everson S. Borges and Henrique Coutinho Layber and Vitor B. Bonella and Cristina K. Dominicini and Rafael Guimarães and Moisés Ribeiro and Marinho Barcellos},
-  year = {2024},
-  journal = {Article}
-}
+@INPROCEEDINGS{pathsec,
+  author={Martinello, Magnos and Gomes, Roberta Lima and Borges, Everson S. and Layber, Henrique Coutinho and Bonella, Vitor B. and Dominicini, Cristina K. and Guimarães, Rafael and Ribeiro, Moisés and Barcellos, Marinho},
+  booktitle={2024 IEEE Conference on Network Function Virtualization and Software Defined Networks (NFV-SDN)}, 
+  title={PathSec: Path-Aware Secure Routing with Native Path Verification and Auditability}, 
+  year={2024},
+  volume={},
+  number={},
+  pages={1-7},
+  keywords={Multiprotocol label switching;Prototypes;Programming;Routing;Regulation;Hardware;Blockchains;Network function virtualization;Security;Software defined networking;Path Aware;Network security;Path Verification;Proof-of-transit;In-networking Programming},
+  doi={10.1109/NFV-SDN61811.2024.10807493}}
+
 
 @article{p4,
   title = {P4: programming protocol-independent packet processors},
@@ -55,15 +60,18 @@
   abstract = {P4 is a high-level language for programming protocol-independent packet processors. P4 works in conjunction with SDN control protocols like OpenFlow. In its current form, OpenFlow explicitly specifies protocol headers on which it operates. This set has grown from 12 to 41 fields in a few years, increasing the complexity of the specification while still not providing the flexibility to add new headers. In this paper we propose P4 as a strawman proposal for how OpenFlow should evolve in the future. We have three goals: (1) Reconfigurability in the field: Programmers should be able to change the way switches process packets once they are deployed. (2) Protocol independence: Switches should not be tied to any specific network protocols. (3) Target independence: Programmers should be able to describe packet-processing functionality independently of the specifics of the underlying hardware. As an example, we describe how to use P4 to configure a switch to add a new hierarchical label.}
 }
 
-@article{mininet-wifi,
-  title = {Mininet-WiFi: Emulating Software-Defined Wireless Networks},
-  author = {Ramon Fontes and Samira Afzal and Samuel Brito and Mateus Santos and Christian Esteve Rothenberg},
-  year = {2015},
-  month = {November},
-  abstract = {As the density of wireless networks continues to grow with more clients, more base stations, and more traffic, designing cost-effective wireless solutions with efficient resource usage and ease to manage is an increasing challenging task due to the overall system complexity. A number of vendors offer scalable and high-performance wireless networks but at a high cost and commonly as a single-vendor solution, limiting the ability to innovate after roll-out. Recent Software-Defined Networking (SDN) approaches propose new means for network virtualization and programmability advancing the way networks can be designed and operated, including user-defined features and customized behaviour even at runtime. However, means for rapid prototyping and experimental evaluation of SDN for wireless environments are not yet available. This paper introduces Mininet-WiFi as a tool to emulate wireless OpenFlow/SDN scenarios allowing high-fidelity experiments that replicate real networking environments. Mininet-WiFi augments the well-known Mininet emulator with virtual wireless stations and access points while keeping the original SDN capabilities and the lightweight virtualization software architecture. We elaborate on the potential applications of Mininet-Wifi and discuss the benefits and current limitations. Two use cases based on IEEE 802.11 demonstrate available functionality in our open source developments.},
-  booktitle = {2nd International Workshop on Management of SDN and NFV Systems, 2015(ManSDN/NFV 2015)},
-  location = {Barcelona, Spain}
+@INPROCEEDINGS{mininet-wifi,
+  author={Fontes, Ramon R. and Afzal, Samira and Brito, Samuel H. B. and Santos, Mateus A. S. and Rothenberg, Christian Esteve},
+  booktitle={2015 11th International Conference on Network and Service Management (CNSM)}, 
+  title={Mininet-WiFi: Emulating software-defined wireless networks}, 
+  year={2015},
+  volume={},
+  number={},
+  pages={384-389},
+  keywords={Wireless networks;IEEE 802.11 Standard;Topology;Emulation;Linux;Protocols;Wireless networks;Emulation;SDN;OpenFlow},
+  doi={10.1109/CNSM.2015.7367387}
 }
+
 
 @inproceedings{mininet,
 author = {Lantz, Bob and Heller, Brandon and McKeown, Nick},
@@ -85,6 +93,7 @@ series = {Hotnets-IX}
 
 @misc{bmv2,
   title = {Behavioral Model},
+  howpublished = "\url{https://github.com/p4lang/behavioral-model}",
   url = {https://github.com/p4lang/behavioral-model},
   note = {Accessed: 2025-03-15},
   year = {2025},
@@ -95,6 +104,7 @@ series = {Hotnets-IX}
   title = {Scapy},
   author = {Biondi Philippe secdev},
   year = {2003},
+  howpublished = "\url{https://scapy.net/}",
   url = {https://scapy.net/},
   note = {Accessed: 2024-09-26}
 }

@@ -6,15 +6,11 @@ This section presents the results for various tests representing different adver
 
 The scenarios include addition, detour, skipping, and out-of-order packet delivery. We define any switch that is not in the position defined in \autoref{topology:base} as an \textit{attacker}, not only an intruder device, so it includes misconfigured switches, controller malfunction, and any other kind of network-affecting anomaly that results in these specified scenarios:
 
-\newcommand{\refsubfigure}[1]{
-    \hyperref[fig:topologies]{\autoref*{fig:topologies}.#1}
-}
-
 \begin{enumerate}[label=\roman*.]
-    \item \label{scenario:addition} \textbf{Addition} (\refsubfigure{a}): An attacker switch is added between $s_5$ and $s_6$. It perfectly replicates the behavior of the original switch, but it does not have the same \nodeid, as it is a secret key, and the hashes will not match when validating the path past the attacker.
-    \item \label{scenario:skipping} \textbf{Skipping} (\refsubfigure{b}): A switch is removed between $s_4$ and $s_6$. The packet will skip removed switch, and the hashes will not match when validating the path past the removed switch.
-    \item \label{scenario:detour} \textbf{Detour} (\refsubfigure{c}): A switch is detoured between $s_5$ and $s_7$ into an attacker by hijacking the port that the packet should have taken exiting $s_5$ and delivering the packet in a new port to $s_7$, posing as $s_6$. The hashes will not match when validating the path past the attacker.
-    \item \label{scenario:outoforder} \textbf{Out-of-order} (\refsubfigure{c}): Links are changed between $s_5$ and $s_6$. The packet will be delivered to $s_6$ before $s_5$, and the hashes will not match when validating the path past the attack.
+    \item \label{scenario:addition} \textbf{Addition} (\autoref{topology:addition}): An attacker switch is added between $s_5$ and $s_6$. It perfectly replicates the behavior of the original switch, but it does not have the same \nodeid, as it is a secret key, and the hashes will not match when validating the path past the attacker.
+    \item \label{scenario:skipping} \textbf{Skipping} (\autoref{topology:skipping}): A switch is removed between $s_4$ and $s_6$. The packet will skip removed switch, and the hashes will not match when validating the path past the removed switch.
+    \item \label{scenario:detour} \textbf{Detour} (\autoref{topology:detour}): A switch is detoured between $s_5$ and $s_7$ into an attacker by hijacking the port that the packet should have taken exiting $s_5$ and delivering the packet in a new port to $s_7$, posing as $s_6$. The hashes will not match when validating the path past the attacker.
+    \item \label{scenario:outoforder} \textbf{Out-of-order} (\autoref{topology:outoforder}): Links are changed between $s_5$ and $s_6$. The packet will be delivered to $s_6$ before $s_5$, and the hashes will not match when validating the path past the attack.
 \end{enumerate}
 
 
