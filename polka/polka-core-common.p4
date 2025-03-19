@@ -78,7 +78,8 @@ control MySwitchId(
     apply {
         meta.apply_sr = 0;
         config.apply();
-        hdr.polka.ttl = meta.switch_id[7:0];
+        // Exposes the switch id to the packet -- This reveals the secret (so it's only for debugging)
+        // hdr.polka.ttl = meta.switch_id[7:0];
     }
 }
 

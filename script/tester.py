@@ -89,7 +89,7 @@ def check_digest(pkts: PacketList, seed_src: int, seed_dst: int):
             if l_hash != last_hash:
                 info(
                     f"*** Comparing {l_hash:#08x}, expects 0x{expected_digest.hex()} "
-                    f"on node {polka.ttl:#04x}:{pkt.sniffed_on} "
+                    f"on port {pkt.sniffed_on} "
                 )
             if l_hash == int.from_bytes(expected_digest, byteorder="big"):
                 info("✅ ok\n")
@@ -112,7 +112,7 @@ def check_digest(pkts: PacketList, seed_src: int, seed_dst: int):
                     probe = pkt.getlayer(PolkaProbe)
                     assert probe is not None, "❌ Polka probe layer not found"
                     info(
-                        f"*** {probe.l_hash:#08x} on node {polka.ttl:#04x}:{pkt.sniffed_on}\n"
+                        f"*** {probe.l_hash:#08x} on port {pkt.sniffed_on}\n"
                     )
 
 
