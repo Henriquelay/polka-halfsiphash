@@ -17,6 +17,9 @@
         packages = with pkgs; [
           python313
           uv
+          typst
+          tinymist
+          typstyle
           # gnumake
           # mininet
           # thrift
