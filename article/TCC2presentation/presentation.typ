@@ -83,18 +83,18 @@
 #slide(steps: 2)[
   == Contexto
 
-  Em sistemas de Roteamento em Origem (SR), normalmente implementados em Redes Definidas por Software (SDNs)@SRSDN o nó de origem define a rota que o pacote deve seguir.
+  Em sistemas de Roteamento em Origem (SR), normalmente implementados em Redes Definidas por Software (SDNs)@SRSDN o nó de entrada define a rota que o pacote deve seguir.
 
   #show: pause
 
-  Há uma necessidade de verificar que o pacote seguiu a rota definida pelo nó de origem, não apenas por questões de segurança, mas também para garantir que a rede esteja funcionando corretamente e configurada adequadamente.
+  Há uma necessidade de verificar que o pacote seguiu a rota definida pelo nó de entrada, não apenas por questões de segurança, mas também para garantir que a rede esteja funcionando corretamente e configurada adequadamente.
 ]
 
 #slide(steps: 4)[
   == Apresentação do Problema
   Assuma um pacote $h_1 -> h_3$:
 
-  1. A rota é definida pelo nó de origem (_ingress node_)
+  1. A rota é definida pelo nó de entrada (_ingress node_)
   #uncover(from: 2)[
     2. ???
   ]
@@ -151,7 +151,7 @@
   )
 ]
 
-#slide(steps: 9)[
+#slide(steps: 10)[
   == Formalizando o Problema
 
   Rota definida Pie é a sequência de nós $s_d$: $(s_d_1, s_d_2, dots, s_d_n)$.\
@@ -162,15 +162,15 @@
 
   // #set text(size: 0.9em)
   #show: pause
-  Os hops estão corretos: $(c_1, c_4, c_3) != (c_1, c_2, c_3)$\
+  Os nós estão corretos: $(c_1, c_4, c_3) != (c_1, c_2, c_3)$\
   #show: pause
-  Não há hops a mais: $(c_1, c_4, c_3) != #only(5)[$(c_1, c_4, c_4, c_3)$]$
+  Não há nós a mais: $(c_1, c_4, c_3) != #only(5)[$(c_1, c_4, c_4, c_3)$]$
   #show: pause
-  #table.cell(fill:red.lighten(5%))[$(c_1, c_4, c_4, c_3)$]Validade não interessa\
+  #text(fill:red)[$(c_1, c_4, c_4, c_3)$]#only(6,[Validade não interessa])\
   #show: pause
-  Não há hops a menos: $(c_1, c_4, c_3) != (c_1, c_3)$\
+  Não há nós a menos: $(c_1, c_4, c_3) != (c_1, c_3)$\
   #show: pause
-  Os hops estão na ordem correta: $(c_1, c_4, c_3) != (c_4, c_1, c_3)$\
+  Os nós estão na ordem correta: $(c_1, c_4, c_3) != (c_4, c_1, c_3)$\
   #show: pause
   *Não é preciso conhecer os elementos da sequência!*
 ]
@@ -184,44 +184,12 @@
 
   Isso define um modelo de multiassinatura. O controlador conhece os segredos dos nós (nodeid) e calcula a assinatura final de Pie após o _ingress edge_ enviar os metadados, e o _egress edge_ captura a assinatura final de Pj.
 ]
-
-#slide[
-
-  #bytefield(
-    // pre: (0.5cm, 2pt),
-    // post: (0.1cm, 12pt),
-    bpr: 64,
-    // Config the header
-    bitheader(
-      "bytes",
-      angle: -30deg, // angle (default: -60deg)
-      // text-size: 8pt, // length (default: global header_font_size or 9pt)
-    ),
-
-    // Add data fields (bit, bits, byte, bytes) and notes
-    // A note always aligns on the same row as the start of the next data field.
-    // note(right)[#text(16pt, fill: blue, "Testing")],
-    // bytes(6)[`eth.dst`],
-    // bytes(6)[`eth.src`],
-    // bytes(2, fill: purple.lighten(50%))[`eth.type`],
-
-    group(right, 3)[PolKA],
-    bytes(1, fill: green.lighten(30%))[`version`],
-    bytes(1, fill: green.lighten(30%))[`ttl`],
-    bytes(2, fill: purple.lighten(30%))[`proto`],
-    bits(160, fill: green.lighten(30%))[routeid],
-    note(right)[Sonda\ Pathsec],
-    bytes(4, fill: teal.lighten(30%))[timestamp],
-    bytes(4, fill: teal.lighten(30%))[lhash],
-  )
-]
-
 #slide(steps: 1)[
   == Solução proposta
 
   $"lhash"_0 = "timestamp"$
 
-  $"lhash"_n = "Hash"("nodeid"_c_n || "portID"_n || "l_hash"_(n-1) )$
+  $"lhash"_n = "Hash"("nodeid"_c_n || "portid"_n || "lhash"_(n-1) )$
 ]
 
 #slide(steps: 6)[
@@ -352,8 +320,8 @@
             align(
               right,
               text(size: 18pt)[
-                Controller: {`timestamp`: #timestamp, lhash: #lhash_certo}\
-                Egress: {`timestamp`: #timestamp, lhash: #text(fill:red, lhash_errado)}\
+                Controller: {`flow_id`: #timestamp, lhash: #lhash_certo}\
+                Egress: {`flow_id`: #timestamp, lhash: #text(fill:red, lhash_errado)}\
               ],
             ),
             name: <anotacao52>,
@@ -407,10 +375,12 @@
   $"lhash"_n = $`SipHash-2-4-32`$(overshell("nodeid"_c_n, "16b")||overshell("portid"_n, "9b")||overshell("timestamp", 32b)||overshell("0000000", 7b), overshell("lhash"_(n-1), 32b) )$
 ]
 
+
+
 #slide(steps: 4)[
   == _SipHash_, _$c$-rounds_ e _$d$-rounds_
 
-  _SipHash_ é um algoritmo baseado em _Add-Rotate-Xor_ (ARX) (BLAKE, ChaCHa20, etc), e uma sequência específica de operações ARX é chamado de _SipRound_.
+  _SipHash_ é um algoritmo baseado em _Add-Rotate-Xor_ (ARX) (BLAKE, ChaCha20, etc), e uma sequência específica de operações ARX é chamado de _SipRound_.
 
   #show: pause
   $c$ é o número iterações _SipRounds_ entre cada ingestão de um novo bloco.
@@ -421,8 +391,29 @@
   #show: pause
   _SipHash_ garante a máxima segurança MAC para $c >= 2; d >= 4$@siphash.
 ]
-#let diagram = diagram.with(spacing: (1cm, 1cm))
 
+
+#slide[
+
+  #bytefield(
+    bpr: 64,
+    // Config the header
+    bitheader(
+      "bytes",
+    ),
+
+    group(right, 3)[PolKA],
+    bytes(1, fill: green.lighten(30%))[`version`],
+    bytes(1, fill: green.lighten(30%))[`ttl`],
+    bytes(2, fill: purple.lighten(30%))[`proto`],
+    bits(160, fill: green.lighten(30%))[routeid],
+    note(right)[Sonda\ Pathsec],
+    bytes(4, fill: teal.lighten(30%))[timestamp],
+    bytes(4, fill: teal.lighten(30%))[lhash],
+  )
+]
+
+#let diagram = diagram.with(spacing: (1cm, 1cm))
 #slide[
   == Testes
 
@@ -485,8 +476,10 @@
     context diagram({
       topo(10)
       core_node((rel: (1, 1), to: <c5>), nodetext[$c_"det"$], name: <cdet>)
-      edge(<c5>)
-      edge(<c7>)
+      edge(<c5>, "<-")
+      edge(<c7>, "->")
+      edge(<c7>, "->", <c6>)
+      edge(<c6>, "->", <c5>)
       host_node((-1, 0), nodetext[$h_11$], name: <h11>)
       edge(<e1>)
     }),
@@ -551,24 +544,31 @@
     table.hline(),
 
     $e_1$, `0x61e8d6e7`, $e_1$, `0x61e8d6e7`, $e_1$, `0x61e8d6e7`, $e_1$, `0x61e8d6e7`, $e_1$, `0x61e8d6e7`,
-    $s_1$, `0xd25dc935`, $s_1$, `0xd25dc935`, $s_1$, `0xd25dc935`, $s_1$, `0xd25dc935`, $s_1$, `0xd25dc935`,
-    $s_2$, `0x245b7ac5`, $s_2$, `0x245b7ac5`, $s_2$, `0x245b7ac5`, $s_2$, `0x245b7ac5`, $s_2$, `0x245b7ac5`,
-    $s_3$, `0xa3b38b83`, $s_3$, `0xa3b38b83`, $s_3$, `0xa3b38b83`, $s_3$, `0xa3b38b83`, $s_3$, `0xa3b38b83`,
-    $s_4$, `0x26aee736`, $s_4$, `0x26aee736`, $s_4$, `0x26aee736`, $s_4$, `0x26aee736`, $s_4$, `0x26aee736`,
-    $s_5$, `0xf9b47914`, $s_5$, `0xf9b47914`, [], [], $s_5$, `0xf9b47914`, redc[$s_6$], redc[`0x4b5a6c5a`],
-    [], [], redc[$s_"add"$], redc[`0x18c6d8d1`], [], [], [], [], [], [],
-    $s_6$, `0x18c6d8d1`, redc[$s_6$], redc[`0xb69b99ec`], redc[$s_6$], redc[`0x4b5a6c5a`], redc[$s_"det"$], redc[`0x250822a2`], redc[$s_5$], redc[`0xde3862a0`],
-    $s_7$, `0xb69b99ec`, redc[$s_7$], redc[`0xfe6117f8`], redc[$s_7$], redc[`0x002346d3`], redc[$s_7$], redc[`0x40298bb9`], redc[$s_7$], redc[`0x648556ec`],
-    $s_8$, `0xfe6117f8`, redc[$s_8$], redc[`0xc8d9fbde`], redc[$s_8$], redc[`0x7ec711aa`], redc[$s_8$], redc[`0xe13dcc9b`], redc[$s_8$], redc[`0x144e1d1b`],
-    $s_9$, `0xc8d9fbde`, redc[$s_9$], redc[`0xa6293a25`], redc[$s_9$], redc[`0x5ee32b7b`], redc[$s_9$], redc[`0x1bf62c19`], redc[$s_9$], redc[`0x9e818f34`],
+    $c_1$, `0xd25dc935`, $c_1$, `0xd25dc935`, $c_1$, `0xd25dc935`, $c_1$, `0xd25dc935`, $c_1$, `0xd25dc935`,
+    $c_2$, `0x245b7ac5`, $c_2$, `0x245b7ac5`, $c_2$, `0x245b7ac5`, $c_2$, `0x245b7ac5`, $c_2$, `0x245b7ac5`,
+    $c_3$, `0xa3b38b83`, $c_3$, `0xa3b38b83`, $c_3$, `0xa3b38b83`, $c_3$, `0xa3b38b83`, $c_3$, `0xa3b38b83`,
+    $c_4$, `0x26aee736`, $c_4$, `0x26aee736`, $c_4$, `0x26aee736`, $c_4$, `0x26aee736`, $c_4$, `0x26aee736`,
+    $c_5$, `0xf9b47914`, $c_5$, `0xf9b47914`, [], [], $c_5$, `0xf9b47914`, redc[$c_6$], redc[`0x4b5a6c5a`],
+    [], [], redc[$c_"add"$], redc[`0x250822a2`], [], [], [], [], [], [],
+    $c_6$, `0x18c6d8d1`, redc[$c_6$], redc[`0x20d21d49`], redc[$c_6$], redc[`0x4b5a6c5a`], redc[$c_"det"$], redc[`0x250822a2`], redc[$c_5$], redc[`0xde3862a0`],
+    $c_7$, `0xb69b99ec`, redc[$c_7$], redc[`0xdd03c4c2`], redc[$c_7$], redc[`0x002346d3`], redc[$c_7$], redc[`0x40298bb9`], redc[$c_7$], redc[`0x648556ec`],
+    $c_8$, `0xfe6117f8`, redc[$c_8$], redc[`0x292e8608`], redc[$c_8$], redc[`0x7ec711aa`], redc[$c_8$], redc[`0xe13dcc9b`], redc[$c_8$], redc[`0x144e1d1b`],
+    $c_9$, `0xc8d9fbde`, redc[$c_9$], redc[`0x32419384`], redc[$c_9$], redc[`0x5ee32b7b`], redc[$c_9$], redc[`0x1bf62c19`], redc[$c_9$], redc[`0x9e818f34`],
     table.hline(),
-    $s_"10"$, `0xa6293a25`, redc[$s_"10"$], redc[`0xf4bcdf07`], redc[$s_"10"$], redc[`0xc973a219`], redc[$s_"10"$], redc[`0xdd3a6675`], redc[$s_"10"$], redc[`0x6f694bc`],
+    $c_"10"$, `0xa6293a25`, redc[$c_"10"$], redc[`0xf4bcdf07`], redc[$c_"10"$], redc[`0xc973a219`], redc[$c_"10"$], redc[`0xdd3a6675`], redc[$c_"10"$], redc[`0x6f694bc`],
     table.hline(),
   )
 ]
 
 #title-slide[
   = Perguntas?
+
+  #align(bottom + left)[
+    Henrique Coutinho Layber
+
+    #link("https://github.com/Henriquelay/polka-halfsiphash")
+  ]
+
 ]
 
 
